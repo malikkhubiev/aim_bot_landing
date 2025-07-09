@@ -7,7 +7,7 @@
     <meta name="description" content="Создайте AI Telegram бота за 1 минуту! Автоматизируйте ответы клиентам 24/7, увеличивайте продажи с помощью чат-бота на базе искусственного интеллекта. Бесплатная пробная версия!">
     <meta name="keywords" content="AI, Telegram, Бот, Автоматизация, Продажи, Чат-бот, Бизнес, Искусственный интеллект, Скидка, SaaS">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://ai-bot-landing.onrender.com">
+    <link rel="canonical" href="https://ai-bot-landing.onrender.com/">
     <link rel="icon" type="image/png" href="favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
@@ -18,8 +18,8 @@
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "AI Telegram Боты для Бизнеса",
-      "url": "https://ai-bot-landing.onrender.com",
-      "logo": "https://ai-bot-landing.onrender.comfavicon.png",
+      "url": "https://ai-bot-landing.onrender.com/",
+      "logo": "https://ai-bot-landing.onrender.com/favicon.png",
       "description": "Создай Telegram Ai-ассистента бесплатно: автоматизация продаж 24/7. Запусти 3 Ai-бота бесплатно на 10 дней, далее — минимальная оплата (50% стоимости), без привязки карты."
     }
     </script>
@@ -29,7 +29,7 @@
       "@type": "Product",
       "name": "AI Telegram Бот для Бизнеса",
       "image": [
-        "https://ai-bot-landing.onrender.comfavicon.png"
+        "https://ai-bot-landing.onrender.com/favicon.png"
       ],
       "description": "Создай Telegram Ai-ассистента бесплатно: автоматизация продаж 24/7. Запусти 3 Ai-бота бесплатно на 10 дней, далее — минимальная оплата (50% стоимости), без привязки карты.",
       "offers": {
@@ -120,25 +120,11 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "AI Telegram Боты для Бизнеса",
-      "url": "https://ai-bot-landing.onrender.com"
+      "url": "https://ai-bot-landing.onrender.com/"
     }
     </script>
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://ai-bot-landing.onrender.com">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://ai-bot-landing.onrender.com">
-    <meta property="og:title" content="Создать AI Telegram Бота для Бизнеса | Автоматизация Ответов 24/7">
-    <meta property="og:description" content="Создайте AI Telegram бота за 1 минуту! Автоматизируйте ответы клиентам 24/7">
-    <meta property="og:image" content="https://ai-bot-landing.onrender.comog-image.jpg">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://ai-bot-landing.onrender.com">
-    <meta property="twitter:title" content="Создать AI Telegram Бота для Бизнеса | Автоматизация Ответов 24/7">
-    <meta property="twitter:description" content="Создайте AI Telegram бота за 1 минуту! Автоматизируйте ответы клиентам 24/7">
-    <meta property="twitter:image" content="https://ai-bot-landing.onrender.comtwitter-image.jpg">
+    <link rel="canonical" href="https://ai-bot-landing.onrender.com/">
 
     <!-- Google Search Console -->
     <!-- <meta name="google-site-verification" content="ВАШ_КОД_ИЗ_GSC" /> -->
@@ -286,7 +272,7 @@
         RewriteEngine On
         # Редирект с www на без www
         RewriteCond %{HTTP_HOST} ^www\.yourdomain\.com [NC]
-        RewriteRule ^(.*)$ https://ai-bot-landing.onrender.com$1 [L,R=301]
+        RewriteRule ^(.*)$ https://ai-bot-landing.onrender.com/$1 [L,R=301]
         # Редирект с HTTP на HTTPS
         RewriteCond %{HTTPS} off
         RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
@@ -308,6 +294,57 @@
     </IfModule>
     -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src * data:; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.googletagmanager.com https://mc.yandex.ru https://connect.facebook.net https://analytics.tiktok.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com data:; connect-src *; frame-ancestors 'none';">
+    <style>
+      :root {
+        --dark-space: #0a0a14;
+        --neon-purple: #6e44ff;
+        --cyan-gradient: #00f0ff;
+        --pink-accent: #ff2d95;
+      }
+      body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: var(--dark-space);
+        color: white;
+        overflow-x: hidden;
+      }
+      .glassmorphism {
+        background: rgba(10, 10, 20, 0.5);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+      }
+      .neon-purple-gradient {
+        background: linear-gradient(135deg, var(--neon-purple), var(--cyan-gradient));
+      }
+      .pulse-animation {
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(110, 68, 255, 0.7); }
+        70% { box-shadow: 0 0 0 15px rgba(110, 68, 255, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(110, 68, 255, 0); }
+      }
+      .glow-text {
+        text-shadow: 0 0 10px rgba(110, 68, 255, 0.7);
+      }
+      .sticky-cta {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 100;
+        animation: pulse 1.5s infinite;
+      }
+      .matrix-rain {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.3;
+      }
+    </style>
 </head>
 <body>
 
