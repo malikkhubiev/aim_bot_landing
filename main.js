@@ -10,18 +10,15 @@ function sendUserEvent(eventName, params = {}) {
 let lastBlur = 0;
 window.addEventListener('blur', () => { lastBlur = Date.now(); });
 window.addEventListener('focus', () => {
-  if (lastBlur && Date.now() - lastBlur > 100) {
-    sendUserEvent('blink');
-  }
+  if (lastBlur && Date.now() - lastBlur > 100) sendUserEvent('blink');
 });
 
 // Scroll depth (25%, 50%, 75%, 100%)
-let scrollTracked = {25: false, 50: false, 75: false, 100: false};
+const scrollTracked = {25: false, 50: false, 75: false, 100: false};
 window.addEventListener('scroll', () => {
-  const scrollTop = window.scrollY;
   const docHeight = document.documentElement.scrollHeight - window.innerHeight;
   if (docHeight <= 0) return;
-  const percent = Math.round((scrollTop / docHeight) * 100);
+  const percent = Math.round((window.scrollY / docHeight) * 100);
   [25, 50, 75, 100].forEach(p => {
     if (!scrollTracked[p] && percent >= p) {
       sendUserEvent('scroll_' + p);
@@ -30,54 +27,116 @@ window.addEventListener('scroll', () => {
   });
 });
 
-// Клики по кнопкам
+// Всё, что зависит от DOM, в одном DOMContentLoaded
 if (typeof document !== 'undefined') {
-  document.addEventListener('click', e => {
-    const btn = e.target.closest('button, a');
-    if (btn) {
-      sendUserEvent('click', {text: btn.innerText || btn.value || btn.id || 'button'});
-    }
-  });
+  document.addEventListener('DOMContentLoaded', function() {
+    // Клики по кнопкам (делегирование)
+    document.body.addEventListener('click', e => {
+      const btn = e.target.closest('button, a');
+      if (btn) sendUserEvent('click', {text: btn.innerText || btn.value || btn.id || 'button'});
+    });
 
-  // Копирование текста
-  document.addEventListener('copy', () => {
-    sendUserEvent('copy');
-  });
+    // Копирование текста
+    document.body.addEventListener('copy', () => sendUserEvent('copy'));
 
-  // Выделение текста
-  document.addEventListener('selectionchange', () => {
-    const sel = window.getSelection();
-    if (sel && sel.toString().length > 5) {
-      sendUserEvent('select_text', {text: sel.toString().slice(0, 100)});
-    }
-  });
+    // Выделение текста
+    document.body.addEventListener('selectionchange', () => {
+      const sel = window.getSelection();
+      if (sel && sel.toString().length > 5) sendUserEvent('select_text', {text: sel.toString().slice(0, 100)});
+    });
 
-  // Время на странице (10, 30, 60 сек)
-  [10, 30, 60].forEach(sec => {
-    setTimeout(() => sendUserEvent('time_' + sec + 's'), sec * 1000);
-  });
+    // Время на странице (10, 30, 60 сек)
+    [10, 30, 60].forEach(sec => setTimeout(() => sendUserEvent('time_' + sec + 's'), sec * 1000));
 
-  // Взаимодействие с формой (input, change, submit)
-  document.addEventListener('input', e => {
-    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
-      sendUserEvent('form_input', {name: e.target.name || e.target.id || ''});
+    // Взаимодействие с формой (input, change, submit) — делегирование
+    document.body.addEventListener('input', e => {
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+        sendUserEvent('form_input', {name: e.target.name || e.target.id || ''});
+      }
+    });
+    document.body.addEventListener('change', e => {
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT')) {
+        sendUserEvent('form_change', {name: e.target.name || e.target.id || ''});
+      }
+    });
+    document.body.addEventListener('submit', e => sendUserEvent('form_submit'));
+
+    // Анимация счётчиков
+    const counters = document.querySelectorAll('.counter[data-target]');
+    if (counters.length) {
+      const speed = 200;
+      counters.forEach(counter => {
+        function animate() {
+          const target = +counter.getAttribute('data-target');
+          const current = +counter.innerText.replace(/\s/g, '');
+          const increment = Math.max(1, Math.ceil(target / speed));
+          if (current < target) {
+            counter.innerText = (current + increment).toLocaleString('ru-RU');
+            setTimeout(animate, 10);
+          } else {
+            counter.innerText = target.toLocaleString('ru-RU');
+          }
+        }
+        animate();
+      });
     }
-  });
-  document.addEventListener('change', e => {
-    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT')) {
-      sendUserEvent('form_change', {name: e.target.name || e.target.id || ''});
+
+    // FAQ-аккордеон
+    const faqItems = document.querySelectorAll('.faq-item');
+    if (faqItems.length) {
+      faqItems.forEach(item => {
+        const btn = item.querySelector('.faq-question');
+        const answer = item.querySelector('.faq-answer');
+        const icon = item.querySelector('.faq-icon');
+        answer.style.maxHeight = '0';
+        answer.style.paddingTop = '0';
+        answer.style.paddingBottom = '0';
+        btn.addEventListener('click', () => {
+          const isOpen = answer.style.maxHeight !== '0px';
+          faqItems.forEach(el => {
+            if (el !== item) {
+              const ans = el.querySelector('.faq-answer');
+              const ic = el.querySelector('.faq-icon');
+              ans.style.maxHeight = '0';
+              ans.style.paddingTop = '0';
+              ans.style.paddingBottom = '0';
+              ic.textContent = '+';
+              ic.style.transform = 'rotate(0deg)';
+              el.classList.remove('active');
+            }
+          });
+          if (!isOpen) {
+            const answerContent = answer.querySelector('div');
+            answer.style.maxHeight = answerContent.scrollHeight + 'px';
+            answer.style.paddingTop = '1rem';
+            answer.style.paddingBottom = '1rem';
+            icon.textContent = '−';
+            icon.style.transform = 'rotate(180deg)';
+            item.classList.add('active');
+          } else {
+            answer.style.maxHeight = '0';
+            answer.style.paddingTop = '0';
+            answer.style.paddingBottom = '0';
+            icon.textContent = '+';
+            icon.style.transform = 'rotate(0deg)';
+            item.classList.remove('active');
+          }
+        });
+      });
+      window.addEventListener('resize', () => {
+        document.querySelectorAll('.faq-item.active').forEach(item => {
+          const answer = item.querySelector('.faq-answer');
+          const answerContent = answer.querySelector('div');
+          answer.style.maxHeight = answerContent.scrollHeight + 'px';
+        });
+      });
     }
-  });
-  document.addEventListener('submit', e => {
-    sendUserEvent('form_submit');
   });
 }
 
 // Уход со страницы — используем visibilitychange вместо beforeunload
 window.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'hidden') {
-    sendUserEvent('leave');
-  }
+  if (document.visibilityState === 'hidden') sendUserEvent('leave');
 });
 
 // 72-часовой отсчёт
@@ -105,82 +164,7 @@ window.addEventListener('visibilitychange', () => {
     if (h) h.textContent = pad(hours);
     if (m) m.textContent = pad(minutes);
     if (s) s.textContent = pad(seconds);
-    if (diff > 0) {
-      setTimeout(updateCountdown, 1000);
-    }
+    if (diff > 0) setTimeout(updateCountdown, 1000);
   }
   updateCountdown();
-})();
-
-// Анимация счётчиков
-if (typeof document !== 'undefined') {
-  document.addEventListener("DOMContentLoaded", function() {
-    const counters = document.querySelectorAll('.counter[data-target]');
-    const speed = 200;
-    counters.forEach(counter => {
-      function animate() {
-        const target = +counter.getAttribute('data-target');
-        const current = +counter.innerText.replace(/\s/g, '');
-        const increment = Math.max(1, Math.ceil(target / speed));
-        if (current < target) {
-          counter.innerText = (current + increment).toLocaleString('ru-RU');
-          setTimeout(animate, 10);
-        } else {
-          counter.innerText = target.toLocaleString('ru-RU');
-        }
-      }
-      animate();
-    });
-  });
-}
-
-// FAQ-аккордеон
-if (typeof document !== 'undefined') {
-  document.addEventListener('DOMContentLoaded', function() {
-    const faqItems = document.querySelectorAll('.faq-item');
-    faqItems.forEach(item => {
-      const btn = item.querySelector('.faq-question');
-      const answer = item.querySelector('.faq-answer');
-      const icon = item.querySelector('.faq-icon');
-      answer.style.maxHeight = '0';
-      answer.style.paddingTop = '0';
-      answer.style.paddingBottom = '0';
-      btn.addEventListener('click', () => {
-        const isOpen = answer.style.maxHeight !== '0px';
-        faqItems.forEach(el => {
-          if (el !== item) {
-            el.querySelector('.faq-answer').style.maxHeight = '0';
-            el.querySelector('.faq-answer').style.paddingTop = '0';
-            el.querySelector('.faq-answer').style.paddingBottom = '0';
-            el.querySelector('.faq-icon').textContent = '+';
-            el.querySelector('.faq-icon').style.transform = 'rotate(0deg)';
-            el.classList.remove('active');
-          }
-        });
-        if (!isOpen) {
-          const answerContent = answer.querySelector('div');
-          answer.style.maxHeight = answerContent.scrollHeight + 'px';
-          answer.style.paddingTop = '1rem';
-          answer.style.paddingBottom = '1rem';
-          icon.textContent = '−';
-          icon.style.transform = 'rotate(180deg)';
-          item.classList.add('active');
-        } else {
-          answer.style.maxHeight = '0';
-          answer.style.paddingTop = '0';
-          answer.style.paddingBottom = '0';
-          icon.textContent = '+';
-          icon.style.transform = 'rotate(0deg)';
-          item.classList.remove('active');
-        }
-      });
-    });
-    window.addEventListener('resize', () => {
-      document.querySelectorAll('.faq-item.active').forEach(item => {
-        const answer = item.querySelector('.faq-answer');
-        const answerContent = answer.querySelector('div');
-        answer.style.maxHeight = answerContent.scrollHeight + 'px';
-      });
-    });
-  });
-} 
+})(); 
