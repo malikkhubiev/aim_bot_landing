@@ -1518,24 +1518,98 @@
                 const modal = document.getElementById('demoModal');
                 const closeBtn = document.getElementById('closeModal');
                 const form = document.getElementById('demoForm');
+                const nameInput = document.getElementById('userName');
+                const emailInput = document.getElementById('userEmail');
+                const phoneInput = document.getElementById('userPhone');
 
-                if (!modal || !closeBtn || !form) {
+                if (!modal || !closeBtn || !form || !nameInput || !emailInput || !phoneInput) {
                     console.error('Элементы модального окна не найдены');
                     return;
                 }
+
+                function normalizePhone(value) {
+                    let digits = (value || '').replace(/\D/g, '');
+                    if (digits.startsWith('00')) digits = digits.slice(2);
+                    if (digits.length === 11 && digits.startsWith('8')) digits = '7' + digits.slice(1);
+                    if (digits.length === 10) digits = '7' + digits; // РФ, если ввели 10 цифр
+                    // Оставляем только первые 11 цифр
+                    return digits.slice(0, 11);
+                }
+
+                function isValidPhoneRu(d) {
+                    return d.length === 11 && d.startsWith('7');
+                }
+
+                function isValidEmail(v) {
+                    return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(v);
+                }
+
+                function formatRuLocal(localDigits) {
+                    // localDigits: до 10 цифр (без ведущей 7)
+                    const a = localDigits.slice(0, 3);
+                    const b = localDigits.slice(3, 6);
+                    const c = localDigits.slice(6, 8);
+                    const d = localDigits.slice(8, 10);
+                    let out = '+7';
+                    if (a) out += ' ' + a;
+                    if (b) out += ' ' + b;
+                    if (c) out += '-' + c;
+                    if (d) out += '-' + d;
+                    return out;
+                }
+
+                function extractLocalDigitsFromInput(val) {
+                    let digits = (val || '').replace(/\D/g, '');
+                    // Если начинается с 7 или 8, убираем её, работаем с локальными 10 цифрами
+                    if (digits.startsWith('7') || digits.startsWith('8')) digits = digits.slice(1);
+                    return digits.slice(0, 10);
+                }
+
+                // Маска ввода для РФ: +7 999 123-45-67
+                phoneInput.addEventListener('input', (e) => {
+                    const local = extractLocalDigitsFromInput(e.target.value);
+                    e.target.value = formatRuLocal(local);
+                });
+                phoneInput.addEventListener('focus', (e) => {
+                    if (!e.target.value.trim()) e.target.value = '+7 ';
+                });
+                phoneInput.addEventListener('blur', (e) => {
+                    // если оставили только "+7 ", очищаем
+                    if (e.target.value.replace(/\D/g, '').length <= 1) e.target.value = '';
+                });
+                phoneInput.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    const pasted = (e.clipboardData || window.clipboardData).getData('text');
+                    const local = extractLocalDigitsFromInput(pasted);
+                    phoneInput.value = formatRuLocal(local);
+                });
 
                 // Обработчик отправки формы
                 form.addEventListener('submit', async function(e) {
                     e.preventDefault();
 
-                    const name = form.querySelector('[name="name"]').value;
-                    const email = form.querySelector('[name="email"]').value;
-                    const phone = form.querySelector('[name="phone"]').value;
+                    const name = nameInput.value.trim();
+                    const email = emailInput.value.trim();
+                    const phoneMasked = phoneInput.value.trim();
 
-                    if (!name || !email || !phone) {
+                    if (!name || !email || !phoneMasked) {
                         alert('Пожалуйста, заполните все поля');
                         return;
                     }
+
+                    const normalized = normalizePhone(phoneMasked);
+                    if (!isValidPhoneRu(normalized)) {
+                        alert('Введите номер в формате РФ: +7 999 123-45-67');
+                        phoneInput.focus();
+                        return;
+                    }
+                    if (!isValidEmail(email)) {
+                        alert('Введите корректный email.');
+                        emailInput.focus();
+                        return;
+                    }
+                    // подменяем поле для отправки на бэкенд нормализованным значением
+                    phoneInput.value = formatRuLocal(normalized.slice(1));
 
                     try {
                         const res = await fetch('https://aim-pay-bot-server-4c57.onrender.com/send_demo_link', {
@@ -1543,7 +1617,7 @@
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ name, email, phone })
+                            body: JSON.stringify({ name, email, phone: normalized })
                         });
                         const data = await res.json();
                         if (res.ok && data.status === 'success') {
@@ -1598,11 +1672,11 @@
                 </div>
                 <div class="form-group">
                     <label for="userEmail">Email</label>
-                    <input type="email" id="userEmail" name="email" required>
+                    <input type="email" id="userEmail" name="email" required pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$" />
                 </div>
                 <div class="form-group">
                     <label for="userPhone">Телефон</label>
-                    <input type="tel" id="userPhone" name="phone" required>
+                    <input type="tel" id="userPhone" name="phone" required inputmode="tel" maxlength="16" placeholder="+7 999 123-45-67" />
                 </div>
                 <button type="submit" class="submit-btn">Получить ссылку</button>
             </form>
