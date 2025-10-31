@@ -390,15 +390,6 @@
             font-size: 50px !important;
         }
 
-        @media (max-width: 575px) {
-            .biggy{
-                font-size: 50px !important;
-            }
-            .whitee{
-                padding: 25px;
-            }
-        }
-
         .boldy{
             font-weight: bold;
         }
@@ -648,6 +639,17 @@
             background-color: #c62828;
         }
 
+        .videlit{
+            padding: 10px 20px;
+            background-color: white;
+            margin-top: 20px;
+        }
+        .inside_b{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         @media (max-width: 768px) {
             .modal-content {
                 padding: 30px 20px;
@@ -663,12 +665,42 @@
                 right: 15px;
                 font-size: 25px;
             }
+
+            .makesmall{
+                font-size: 45px !important;
+            }
+
+            .videlit{
+                font-size: 28px !important;
+            }
+
+            .aim{
+                right: 0 !important;
+            }
         }
 
-        .videlit{
-            padding: 10px 20px;
-            background-color: white;
-            margin-top: 20px;
+        @media (max-width: 575px) {
+            .biggy{
+                font-size: 50px !important;
+            }
+            .whitee{
+                padding: 25px;
+            }
+            .videlit{
+                padding: 5px 5px;
+                font-size: 18px !important;
+            }
+            .b{
+                max-width: 375px !important;
+            }
+            .inside_b{
+                flex-direction: column;
+                align-items: start;
+                justify-content: start;
+            }
+            .grassy{
+                margin-top: 20px;
+            }
         }
     </style>
 </head>
@@ -744,7 +776,7 @@
                 </div>
             </div>
             <div class="md:w-1/2 flex justify-center">
-                <div class="crypto-card p-6 max-w-md relative cardy">
+                <div class="crypto-card p-6 max-w-md relative cardy b">
                     <div class="absolute -top-4 -right-4 font-bold px-3 py-1 rounded-full text-xl aim">
                         КУРС С СЕРТИФИКАТОМ
                     </div>
@@ -764,11 +796,11 @@
                     <div class="flex items-center text-yellow-400 mb-2">
                         <span class="text-white text-sm">+ Дополнительные материалы и датасеты</span>
                     </div>
-                    <div class="flex justify-between items-center">
+                    <div class="inside_b">
                         <div class="text-white">
                             + Практика для крепких навыков
                         </div>
-                        <div class="text-green-400">
+                        <div class="text-green-400 grassy">
                             <i class="fas fa-check-circle mr-1" alt="Checkmark"></i> Доступ через Telegram
                         </div>
                     </div>
@@ -1075,10 +1107,10 @@
     <section id="price" class="py-16 px-6 bg-gray-900">
         <div class="container mx-auto maxwidth">
             <div class="text-center mb-16">
-                <h2 class="text-5xl md:text-4xl font-bold mb-4" style="text-transform: uppercase; font-size: 50px; line-height: 60px;">
+                <h2 class="text-5xl md:text-4xl font-bold mb-4 makesmall" style="text-transform: uppercase; font-size: 50px; line-height: 60px;">
                     <span class="crypto-text">AiM</span> - курс по машинному обучению <span class="crypto-text">без переплат</span>
                 </h2><br>
-                <p class="text-2xl md:text-4xl font-bold text-white mb-4">
+                <p class="text-2xl md:text-4xl font-bold text-white mb-4 makesmaller">
                     Хочешь <span class="crypto-text">полистать</span> лекции,<br>собрать <span class="crypto-text">fake</span> портфолио<br>и <span class="crypto-text">выскочить</span> на работу?<br>
                     Это <span class="crypto-text">не сюда.</span><br>
                     Мы учим <span class="crypto-text">понимать методы</span> и <span class="crypto-text">строить модели</span>.<br>
