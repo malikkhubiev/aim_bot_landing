@@ -1871,12 +1871,22 @@
                     phoneInput.value = formatRuLocal(normalized.slice(1));
 
                     try {
+                        // Получаем историю чата
+                        const chatHistory = window.getChatHistory ? window.getChatHistory() : [];
+                        const sessionId = localStorage.getItem('chatSessionId') || '';
+                        
                         const res = await fetch('https://aim-pay-bot-server-4c57.onrender.com/send_demo_link', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ name, email, phone: normalized })
+                            body: JSON.stringify({ 
+                                name, 
+                                email, 
+                                phone: normalized,
+                                chat_history: chatHistory,
+                                chat_session_id: sessionId
+                            })
                         });
                         const data = await res.json();
                         if (res.ok && data.status === 'success') {
@@ -1952,6 +1962,12 @@
             // Загружаем при инициализации
             loadMessageCount();
             
+            // Загружаем историю из localStorage при загрузке страницы
+            window.addEventListener('load', () => {
+                // Не загружаем сразу, т.к. есть системное сообщение
+                // История загрузится при открытии чата
+            });
+            
             function generateSessionId() {
                 return 'chat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             }
@@ -1965,12 +1981,51 @@
                 chatStatus.textContent = text;
             }
             
+            function saveChatHistory() {
+                // Сохраняем историю чата в localStorage
+                const messages = Array.from(chatMessages.querySelectorAll('.chat-message')).map(msg => {
+                    const content = msg.querySelector('.message-content').textContent;
+                    const isUser = msg.classList.contains('user-message');
+                    return {
+                        message: content,
+                        is_from_user: isUser,
+                        created_at: new Date().toISOString()
+                    };
+                });
+                localStorage.setItem('chatHistory', JSON.stringify(messages));
+                localStorage.setItem('chatSessionId', sessionId);
+            }
+            
+            function loadChatHistoryFromStorage() {
+                // Загружаем историю из localStorage
+                const saved = localStorage.getItem('chatHistory');
+                if (saved) {
+                    try {
+                        const messages = JSON.parse(saved);
+                        messages.forEach(msg => {
+                            const msgDiv = document.createElement('div');
+                            msgDiv.className = `chat-message ${msg.is_from_user ? 'user-message' : 'bot-message'}`;
+                            msgDiv.dataset.loaded = 'true'; // Помечаем как загруженное, чтобы не сохранять снова
+                            msgDiv.innerHTML = `<div class="message-content">${escapeHtml(msg.message)}</div>`;
+                            chatMessages.appendChild(msgDiv);
+                        });
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    } catch (e) {
+                        console.error('Error loading chat history:', e);
+                    }
+                }
+            }
+            
             function addMessage(text, isUser) {
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
                 messageDiv.innerHTML = `<div class="message-content">${escapeHtml(text)}</div>`;
                 chatMessages.appendChild(messageDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
+                // Сохраняем историю после добавления сообщения (только новые, не загруженные)
+                if (!messageDiv.dataset.loaded) {
+                    saveChatHistory();
+                }
             }
             
             function escapeHtml(text) {
@@ -2080,9 +2135,12 @@
             }, 5000);
             
             // Загрузка истории при открытии
+            let historyLoaded = false;
             chatToggle.addEventListener('click', async () => {
-                if (chatWidget.classList.contains('active')) {
+                if (chatWidget.classList.contains('active') && !historyLoaded) {
+                    historyLoaded = true;
                     try {
+                        // Сначала пробуем загрузить с сервера
                         const response = await fetch(`${API_BASE}/api/chat/history?session_id=${sessionId}`);
                         const data = await response.json();
                         if (data.messages && data.messages.length > 0) {
@@ -2097,12 +2155,39 @@
                             data.messages.forEach(msg => {
                                 addMessage(msg.message, msg.is_from_user);
                             });
+                            return;
                         }
                     } catch (error) {
-                        console.error('Failed to load history:', error);
+                        console.error('Failed to load history from server:', error);
                     }
+                    // Если с сервера не получилось, загружаем из localStorage
+                    loadChatHistoryFromStorage();
                 }
             });
+            
+            // Экспортируем функцию получения истории для использования в форме
+            window.getChatHistory = function() {
+                const saved = localStorage.getItem('chatHistory');
+                if (saved) {
+                    try {
+                        return JSON.parse(saved);
+                    } catch (e) {
+                        console.error('Error parsing chat history:', e);
+                        return [];
+                    }
+                }
+                // Если в localStorage нет, собираем из DOM
+                const messages = Array.from(chatMessages.querySelectorAll('.chat-message')).map(msg => {
+                    const content = msg.querySelector('.message-content').textContent;
+                    const isUser = msg.classList.contains('user-message');
+                    return {
+                        message: content,
+                        is_from_user: isUser,
+                        created_at: new Date().toISOString()
+                    };
+                });
+                return messages;
+            };
         })();
     </script>
 
