@@ -539,6 +539,19 @@
             font-size: 14px;
             padding: 5px;
         }
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px 8px;
+            margin-right: 5px;
+            transition: opacity 0.2s ease;
+        }
+        .chat-close:hover {
+            opacity: 0.7;
+        }
         .chat-body {
             display: flex;
             flex-direction: column;
@@ -1485,6 +1498,9 @@
                 <span class="chat-title">AI Помощник</span>
                 <div class="chat-status" id="chatStatus"></div>
             </div>
+            <button class="chat-close" id="chatClose" title="Закрыть">
+                &#10006;
+            </button>
             <button class="chat-toggle" id="chatToggle">
                 <i class="fas fa-chevron-down" id="chatToggleIcon"></i>
             </button>
@@ -2042,6 +2058,13 @@
             // Инициализация
             chatToggleBtn.addEventListener('click', toggleChat);
             chatToggle.addEventListener('click', toggleChat);
+            const chatClose = document.getElementById('chatClose');
+            if (chatClose) {
+                chatClose.addEventListener('click', () => {
+                    chatWidget.classList.remove('active');
+                    chatToggleBtn.classList.remove('hidden');
+                });
+            }
             chatSend.addEventListener('click', sendMessage);
             chatInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
