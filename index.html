@@ -1875,6 +1875,26 @@
                         const chatHistory = window.getChatHistory ? window.getChatHistory() : [];
                         const sessionId = localStorage.getItem('chatSessionId') || '';
                         
+                        // Сохраняем историю на сервер при отправке формы (но оставляем в localStorage)
+                        if (chatHistory.length > 0) {
+                            try {
+                                await fetch('https://aim-pay-bot-server-4c57.onrender.com/api/chat/save_history', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        session_id: sessionId,
+                                        chat_history: chatHistory
+                                    })
+                                });
+                                console.log('Chat history saved to server on form submit');
+                            } catch (err) {
+                                console.error('Failed to save chat history on form submit:', err);
+                                // Не блокируем отправку формы, если сохранение истории не удалось
+                            }
+                        }
+                        
                         const res = await fetch('https://aim-pay-bot-server-4c57.onrender.com/send_demo_link', {
                             method: 'POST',
                             headers: {
@@ -1945,22 +1965,40 @@
             let messageCount = 0;
             const MAX_MESSAGES = 10;
             const API_BASE = 'https://aim-pay-bot-server-4c57.onrender.com';
+            let chatHistorySaved = false; // Флаг, чтобы не отправлять историю дважды при выходе
             
-            // Загружаем количество сообщений с сервера
-            async function loadMessageCount() {
-                try {
-                    const response = await fetch(`${API_BASE}/api/chat/history?session_id=${sessionId}`);
-                    const data = await response.json();
-                    if (data.messages) {
-                        messageCount = data.messages.filter(m => m.is_from_user).length;
+            // Функция для получения текущей истории из localStorage
+            function getCurrentChatHistory() {
+                const saved = localStorage.getItem('chatHistory');
+                if (saved) {
+                    try {
+                        return JSON.parse(saved);
+                    } catch (e) {
+                        console.error('Error parsing chat history:', e);
+                        return [];
                     }
-                } catch (error) {
-                    console.error('Failed to load message count:', error);
                 }
+                // Если в localStorage нет, собираем из DOM
+                const messages = Array.from(chatMessages.querySelectorAll('.chat-message')).map(msg => {
+                    const content = msg.querySelector('.message-content').textContent;
+                    const isUser = msg.classList.contains('user-message');
+                    return {
+                        message: content,
+                        is_from_user: isUser,
+                        created_at: new Date().toISOString()
+                    };
+                });
+                return messages;
             }
             
-            // Загружаем при инициализации
-            loadMessageCount();
+            // Обновляем количество сообщений из localStorage
+            function updateMessageCount() {
+                const history = getCurrentChatHistory();
+                messageCount = history.filter(m => m.is_from_user).length;
+            }
+            
+            // Инициализируем счетчик при загрузке
+            updateMessageCount();
             
             // Загружаем историю из localStorage при загрузке страницы
             window.addEventListener('load', () => {
@@ -2072,6 +2110,9 @@
                 await delay(1000);
                 
                 try {
+                    // Получаем текущую историю чата для отправки на сервер (для контекста)
+                    const currentHistory = getCurrentChatHistory();
+                    
                     const response = await fetch(`${API_BASE}/api/chat/send`, {
                         method: 'POST',
                         headers: {
@@ -2079,7 +2120,8 @@
                         },
                         body: JSON.stringify({
                             session_id: sessionId,
-                            message: message
+                            message: message,
+                            chat_history: currentHistory  // Отправляем историю для контекста
                         })
                     });
                     
@@ -2090,8 +2132,13 @@
                     } else if (data.response) {
                         addMessage(data.response, false);
                     } else if (data.message) {
-                        // Сообщение о том, что нужно быть кратким
+                        // Сообщение о том, что нужно быть кратким или о лимите
                         addMessage(data.message, false);
+                        // Если это лимит, обновляем счетчик
+                        if (data.message.includes('лимит')) {
+                            messageCount = MAX_MESSAGES;
+                            updateMessageCount();
+                        }
                     } else {
                         addMessage('Получен некорректный ответ от сервера.', false);
                     }
@@ -2105,6 +2152,47 @@
                     chatInput.focus();
                 }
             }
+            
+            // Функция для сохранения истории на сервер
+            async function saveChatHistoryToServer() {
+                // Предотвращаем дублирование отправки
+                if (chatHistorySaved) {
+                    return;
+                }
+                
+                const history = getCurrentChatHistory();
+                if (history.length === 0) {
+                    return; // Нет истории для сохранения
+                }
+                
+                try {
+                    const data = JSON.stringify({
+                        session_id: sessionId,
+                        chat_history: history
+                    });
+                    
+                    // Используем fetch с keepalive для надежной отправки при закрытии страницы
+                    // sendBeacon не поддерживает custom headers для JSON, поэтому используем fetch
+                    fetch(`${API_BASE}/api/chat/save_history`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: data,
+                        keepalive: true  // Позволяет выполниться даже после закрытия страницы
+                    }).catch(err => {
+                        console.error('Failed to save chat history on exit:', err);
+                    });
+                    
+                    chatHistorySaved = true;
+                } catch (error) {
+                    console.error('Failed to save chat history:', error);
+                }
+            }
+            
+            // Сохраняем историю при выходе из сайта
+            window.addEventListener('beforeunload', saveChatHistoryToServer);
+            window.addEventListener('pagehide', saveChatHistoryToServer);
             
             function delay(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
@@ -2153,8 +2241,22 @@
                             }
                             // Добавляем загруженные сообщения
                             data.messages.forEach(msg => {
-                                addMessage(msg.message, msg.is_from_user);
+                                const msgDiv = document.createElement('div');
+                                msgDiv.className = `chat-message ${msg.is_from_user ? 'user-message' : 'bot-message'}`;
+                                msgDiv.dataset.loaded = 'true'; // Помечаем как загруженное
+                                msgDiv.innerHTML = `<div class="message-content">${escapeHtml(msg.message)}</div>`;
+                                chatMessages.appendChild(msgDiv);
                             });
+                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                            
+                            // Сохраняем загруженную с сервера историю в localStorage для дальнейшего продолжения
+                            const messagesToSave = data.messages.map(msg => ({
+                                message: msg.message,
+                                is_from_user: msg.is_from_user,
+                                created_at: msg.created_at || new Date().toISOString()
+                            }));
+                            localStorage.setItem('chatHistory', JSON.stringify(messagesToSave));
+                            updateMessageCount(); // Обновляем счетчик сообщений
                             return;
                         }
                     } catch (error) {
@@ -2205,7 +2307,7 @@
                 </div>
                 <div class="form-group">
                     <label for="userEmail">Email</label>
-                    <input type="email" id="userEmail" name="email" required pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$" />
+                    <input type="email" id="userEmail" name="email" required pattern="^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$" />
                 </div>
                 <div class="form-group">
                     <label for="userPhone">Телефон</label>
