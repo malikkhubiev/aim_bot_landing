@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wall Street — Чек-лист в карточках</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background:#000; color:#fff; font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif }
+    .container { max-width: 900px; margin:0 auto; padding:20px }
+    .header h1 { font-size: 36px; margin: 0 0 8px }
+    .hint { color:#a8b3c8; font-size:14px }
+    .card { border:1px solid #222; border-radius:16px; padding:24px; margin:16px 0; background:#0a0a0a }
+    .progress { height:12px; background:#1a1a1a; border-radius:999px; overflow:hidden; border:1px solid #222 }
+    .progress > div { height:100%; background:linear-gradient(90deg,#1f6feb,#2ea043); width:0 }
+    .actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px }
+    .btn { background:#1f6feb; color:#fff; border:0; border-radius:10px; padding:10px 14px; cursor:pointer }
+    .btn.ghost { background:#222 }
+    .micro { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px }
+    .micro .choice { border:1px solid #333; background:#111; color:#fff; padding:10px 12px; border-radius:10px; cursor:pointer }
+    .note { color:#bbb; font-size:14px; margin-top:6px }
+    .pill { display:inline-block; padding:4px 10px; border-radius:999px; border:1px solid #333; font-size:12px; background:#111; color:#ddd }
+    .bg-clean { background:#031a26 }     /* очистка — светло-голубой оттенок */
+    .bg-eng { background:#2a2301 }       /* инженерия — жёлтый оттенок */
+    .bg-forecast { background:#021a0b }  /* прогноз — зелёный оттенок */
+    .bg-metrics { background:#13021a }   /* метрики — фиолетовый оттенок */
+    .personal { color:#fff; margin: 6px 0 14px; font-size:18px }
+  </style>
+  <script src="state.js"></script>
+  <script src="longrid.js" defer></script>
+  </head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Wall Street — Чек-лист</h1>
+      <div id="leadInfo" class="hint">Загрузка данных лида…</div>
+    </div>
+
+    <div class="card">
+      <div class="progress"><div id="progressBar"></div></div>
+      <div id="cardHost" style="margin-top:16px"></div>
+      <div class="actions">
+        <button id="btnPrev" class="btn ghost">Назад</button>
+        <button id="btnMore" class="btn ghost">Хочу узнать подробнее 💡</button>
+        <button id="btnNext" class="btn">Дальше</button>
+      </div>
+      <div class="note" id="stepNote"></div>
+    </div>
+  </div>
+</body>
+</html>
+
+

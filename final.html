@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Стоит ли тебе купить курс?</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    *{text-align: center;}
+    h1{font-size: 50px;}
+    p{font-size: 19px;}
+    .thanks{text-align: center;}
+    .right{background-color: #1c1c1c; margin: 20px auto; font-size: 25px; cursor: pointer; padding: 20px; border-radius: 10px; border: 1px solid #484848; color: white;}
+    .form { background:#fff; border:1px solid #e6eaf2; border-radius:10px; padding:50px; margin:16px 0 }
+    .row { display:flex; gap:12px; flex-wrap:wrap }
+    .row .field { flex:1 1 240px; display:flex; flex-direction:column; gap:6px }
+    .field input, .field textarea { border:1px solid #cfd6e4; border-radius:8px; padding:10px 12px; font-size:20px }
+    .hint { color:#667085; font-size:12px }
+    .question { display: flex; justify-content: start; align-items: center; flex-direction: column; background: transparent; border: 0; border-radius:10px; padding:30px 20px; margin:12px 0 }
+    .answers { display:flex; justify-content: start; align-items: start; flex-direction: column;}
+    .answers button { max-width: 350px; border:1px solid #cfd6e4; background:#1c1c1c; border-radius:8px; padding:24px; cursor:pointer; color: white; font-size: 17px; }
+    .answers button.selectedd { background:#E83141; color: white }
+    .answers button:hover { background:#E83141; }
+    .myown{font-size:20px; color:#fff; margin-top:8px; display: flex;justify-content: start;align-items: center; flex-direction: column;}
+    .myown b{margin-top: 20px;}
+    .verdict { background:#1c1c1c; border:1px solid #e6eaf2; border-radius:10px; padding:30px 20px; margin:12px 0; color: white; }
+    .verdict h3 { color: #fff; }
+    .verdict-content { text-align: left; margin-top: 20px; }
+    .ans{text-align: left; font-size: 30px;}
+  </style>
+  </head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1>Стоит ли тебе купить курс?</h1>
+      <div id="leadInfo" class="hint">
+        Загрузка данных лида…
+      </div>
+    </div>
+  </header>
+  <main class="container">
+    <section id="quiz"></section>
+  </main>
+  <script src="state.js"></script>
+  <script src="final_app.js"></script>
+  <script>
+    (function(){
+      const API = 'https://aim-pay-bot-server-4c57.onrender.com';
+      function getQueryParam(name){ const u = new URL(window.location.href); return u.searchParams.get(name); }
+      async function fetchJson(url, opts){ const r = await fetch(url, opts); if(!r.ok) throw new Error('HTTP '+r.status); return await r.json(); }
+      async function loadLead(){
+        const el = document.getElementById('leadInfo');
+        const leadId = getQueryParam('lead_id');
+        if(!leadId){ el.textContent = 'lead_id не указан'; return; }
+        try{
+          const resp = await fetchJson(`${API}/form_warm/clients/${leadId}`);
+          if(resp.status !== 'success'){ el.textContent = 'Лид не найден'; return; }
+          const lead = resp.lead;
+          el.innerHTML = `
+            <div class="myown"><b>Имя:</b> ${lead.name || '-'} &nbsp; <b>Email:</b> ${lead.email || '-'} &nbsp; <b>Телефон:</b> ${lead.phone || '-'}</div>
+          `;
+        }catch(e){ el.textContent = 'Ошибка загрузки данных лида'; }
+      }
+      loadLead();
+    })();
+  </script>
+</body>
+</html>
+
+
