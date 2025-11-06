@@ -1973,11 +1973,11 @@
                             try { closeModal && closeModal(); } catch(_){}
                             form.reset();
                             const leadId = data.lead_id || '';
-                            // Редирект на тёплый прогрев, сообщаем что отправили ссылку
-                            const fwUrl = new URL('https://mind-testing.vercel.app/');
-                            if (leadId) fwUrl.searchParams.set('lead_id', leadId);
-                            fwUrl.searchParams.set('notice', 'demo_sent');
-                            window.location.href = fwUrl.toString();
+                            // Редирект на quest.html с данными лида
+                            const questUrl = new URL('https://ai-bot-landing.vercel.app/quest.html');
+                            if (leadId) questUrl.searchParams.set('lead_id', leadId);
+                            questUrl.searchParams.set('notice', 'demo_sent');
+                            window.location.href = questUrl.toString();
                         } else {
                             alert(data.message || 'Ошибка отправки. Попробуйте позже.');
                         }
