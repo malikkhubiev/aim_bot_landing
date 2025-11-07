@@ -23,8 +23,7 @@
       id: 'ml-checklist',
       title: 'Чек-лист по построению модели ✅',
       chunks: [
-        'Jeremy: Мой план это 15 этапов 🤯. Не пугайтесь, Босс, Вы легко разберётесь с каждым шагом 😉:',
-        '',
+        'Jeremy: Мой план это 15 этапов 🤯. Не пугайтесь, Босс, Вы легко разберётесь с каждым шагом 😉:<br>',
         '1. Очистка данных 🫧 - уберём опечатки и странные значения',
         '2. Инженерия признаков 🧠 - создадим новые полезные показатели',
         '3. Уничтожение предикторов с корреляцией 🧑‍💼🧑‍💼 - уберём дублирующую информацию',
@@ -185,15 +184,15 @@
     const contentHtml = card.chunks
       .map(p=>p.trim())
       .filter(Boolean)
-      .map(p=>`<p style="text-align:left;margin:8px 0">${escapeHtml(p)}</p>`)
+      .map(p=>`<p style="text-align:left;margin:8px 0">${p}</p>`)
       .join('');
 
     let microHtml = '';
     if (card.micro){
       microHtml += `<div class="micro">`;
-      microHtml += `<div style="flex:1 1 100%">${escapeHtml(card.micro.question)}</div>`;
+      microHtml += `<div style="flex:1 1 100%">${card.micro.question}</div>`;
       card.micro.choices.forEach(ch => {
-        microHtml += `<button class="choice" data-key="${ch.key}">${escapeHtml(ch.text)}</button>`;
+        microHtml += `<button class="choice" data-key="${ch.key}">${ch.text}</button>`;
       });
       microHtml += `</div>`;
       microHtml += `<div id="microFeedback" class="note"></div>`;
@@ -202,7 +201,7 @@
     host.innerHTML = `
       <div class="card">
         <div class="pill">Шаг ${index+1} из ${total} 🚀</div>
-        <h2 style="margin:10px 0 6px">${escapeHtml(card.title)}</h2>
+        <h2 style="margin:10px 0 6px">${card.title}</h2>
         ${contentHtml}
         ${microHtml}
       </div>
@@ -228,13 +227,6 @@
         });
       });
     }
-  }
-
-  function escapeHtml(s){
-    return String(s)
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;');
   }
 
   async function loadLead(leadId){
