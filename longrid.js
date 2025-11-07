@@ -5,68 +5,9 @@
   async function fetchText(url){ const r = await fetch(url); if(!r.ok) throw new Error('HTTP '+r.status); return await r.text(); }
   async function fetchJson(url, opts){ const r = await fetch(url, opts); if(!r.ok) throw new Error('HTTP '+r.status); return await r.json(); }
 
-  function detectThemeBlock(title){
-    const t = (title || '').toLowerCase();
-    if (t.includes('очистка')) return 'clean';
-    if (t.includes('инженер') || t.includes('признак')) return 'eng';
-    if (t.includes('прогноз') || t.includes('модел') || t.includes('градиент')) return 'forecast';
-    if (t.includes('метрик') || t.includes('валидац') || t.includes('ошиб')) return 'metrics';
-    return '';
-  }
+  const cards = [
 
-  function themeClass(theme){
-    if (theme==='clean') return 'bg-clean';
-    if (theme==='eng') return 'bg-eng';
-    if (theme==='forecast') return 'bg-forecast';
-    if (theme==='metrics') return 'bg-metrics';
-    return '';
-  }
-
-  function splitIntoCards(raw){
-    const lines = raw.split(/\r?\n/);
-    // Find numbered section heads like "1. Очистка данных"...
-    const cards = [];
-    let current = { id:'intro', title:'Чек-лист по построению модели', chunks:[], theme:'' };
-    for (const line of lines){
-      const m = line.match(/^\s*(\d{1,2})\.\s+(.*)$/);
-      if (m) {
-        if (current.chunks.length) cards.push(current);
-        const idx = Number(m[1]);
-        const title = m[2].trim();
-        current = { id: 'step_'+idx, title, chunks:[], theme: detectThemeBlock(title) };
-        continue;
-      }
-      current.chunks.push(line);
-    }
-    if (current.chunks.length) cards.push(current);
-
-    // Post-process: attach micro interactions to a few known steps
-    const withUx = cards.map(c => ({ ...c, micro: microFor(c) }));
-    return withUx;
-  }
-
-  function microFor(card){
-    const t = card.title.toLowerCase();
-    if (t.includes('корреляци')){
-      return {
-        question: 'Если два советника всегда говорят одно и то же — стоит ли платить обоим?',
-        choices: [
-          { key:'A', text:'Да, надёжнее вдвоём', correct:false, feedback:'Не совсем. Дубликаты не дают новой информации.' },
-          { key:'B', text:'Нет, уволим одного', correct:true, feedback:'Правильно! Меньше дубликатов — быстрее и дешевле 👌' }
-        ]
-      };
-    }
-    if (t.includes('градиентного бустинга')){
-      return {
-        question: 'Как бустинг повышает точность?',
-        choices: [
-          { key:'A', text:'Повторяет один и тот же прогноз', correct:false, feedback:'Нет, он не зацикливается.' },
-          { key:'B', text:'Учится на своих ошибках итеративно', correct:true, feedback:'Верно! Ошибки прошлого круга исправляются следующим.' }
-        ]
-      };
-    }
-    return null;
-  }
+  ]
 
   function renderCard({ card, leadName, index, total, cardsWithExtra }){
     const host = document.getElementById('cardHost');
@@ -77,7 +18,6 @@
     const pct = Math.round(((index+1) / total) * 100);
     bar.style.width = pct + '%';
 
-    const theme = themeClass(card.theme);
     const personal = leadName ? `${leadName}, смотри, вот тут важный момент 👇` : 'Смотри, вот тут важный момент 👇';
 
     const contentHtml = card.chunks
@@ -97,31 +37,17 @@
       microHtml += `<div id="microFeedback" class="note"></div>`;
     }
 
-    // Check if extra content was previously shown
-    const hadExtra = cardsWithExtra && cardsWithExtra.has(index);
-    const extraContent = hadExtra ? 
-      '<div class="note" style="margin-top:12px;">Расширенное объяснение: представьте, что мы раскладываем шаг на подзадачи и проверяем каждую — так надёжнее закрепляется понимание.</div>' : 
-      `<div id="extra_${index}" style="display:none;"></div>`;
-
     host.innerHTML = `
-      <div class="card ${theme}">
+      <div class="card">
         <div class="pill">Шаг ${index+1} из ${total}</div>
         <h2 style="margin:10px 0 6px">${escapeHtml(card.title)}</h2>
         <div class="personal">${escapeHtml(personal)}</div>
         ${contentHtml}
         ${microHtml}
-        ${extraContent}
       </div>
     `;
 
     stepNote.textContent = `Карточка ${index+1}/${total}`;
-
-    // Show/hide "more" button - hide if extra content already shown or on last card
-    if (hadExtra || index === total - 1) {
-      btnMore.style.display = 'none';
-    } else {
-      btnMore.style.display = '';
-    }
 
     // Ensure "Next" button is always enabled
     btnNext.disabled = false;
@@ -175,7 +101,6 @@
     updateLeadBanner(lead);
 
     const raw = await fetchText('longrid.txt');
-    const cards = splitIntoCards(raw);
     const total = cards.length;
 
     // Restore position
@@ -240,7 +165,7 @@
         <div class="card" style="text-align: center; padding: 40px 20px;">
           <h2 style="margin: 20px 0;">Поздравляем! Чек-лист пройден 🎉</h2>
           <p style="font-size: 20px; margin: 20px 0; line-height: 1.6;">
-            Хотите узнать как построить машинное обучение для компании на Wall Street?<br><br>
+            Хотите узнать как построить машинное обучение для компании на Уолл-стрит?<br><br>
             Вы пройдёте все 15 этапов в интерактивном режиме и узнаете какой стиль работы у инженера ML.
           </p>
         </div>
