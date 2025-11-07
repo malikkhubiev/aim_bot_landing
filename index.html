@@ -1943,6 +1943,8 @@
                         // Считываем utm_source из адресной строки
                         const url = new URL(window.location.href);
                         const utm_source = url.searchParams.get('utm_source') || url.searchParams.get('utm') || '';
+                        console.log("url", url)
+                        console.log("utm_source", utm_source)
 
                         const res = await fetch('https://aim-pay-bot-server-4c57.onrender.com/send_demo_link', {
                             method: 'POST',
@@ -1959,12 +1961,15 @@
                             })
                         });
                         const data = await res.json();
+                        console.log("data from sending lead", data)
                         if (res.ok && data.status === 'success') {
                             // Отправляем цель в Яндекс Метрику (зависит от METRICS_GOAL)
                             if (window.ym && typeof window.ym === 'function') {
                                 try {
                                     // По умолчанию используем lead_form_sent, но можно изменить через переменную окружения
                                     const metricsGoal = window.METRICS_GOAL || 'lead_form_sent';
+                                    console.log("metricsGoal is", metricsGoal)
+                                    console.log("YANDEX_METRIKA_ID is", window.YANDEX_METRIKA_ID)
                                     window.ym(window.YANDEX_METRIKA_ID, 'reachGoal', metricsGoal);
                                 } catch (e) {
                                     console.error('Yandex Metrika error:', e);

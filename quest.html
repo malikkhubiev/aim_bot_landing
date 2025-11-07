@@ -50,6 +50,7 @@
           const resp = await fetchJson(`${API}/form_warm/clients/${leadId}`);
           if(resp.status !== 'success'){ el.textContent = 'Лид не найден'; return; }
           const lead = resp.lead;
+          console.log("lead", lead)
           el.innerHTML = `
             <div class="myown"><b>Имя:</b> ${lead.name || '-'} &nbsp; <b>Email:</b> ${lead.email || '-'} &nbsp; <b>Телефон:</b> ${lead.phone || '-'}</div>
           `;
