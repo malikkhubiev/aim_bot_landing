@@ -13,7 +13,6 @@
     const host = document.getElementById('cardHost');
     const bar = document.getElementById('progressBar');
     const stepNote = document.getElementById('stepNote');
-    const btnMore = document.getElementById('btnMore');
     const btnNext = document.getElementById('btnNext');
     const pct = Math.round(((index+1) / total) * 100);
     bar.style.width = pct + '%';
@@ -116,48 +115,16 @@
     // Persist view event
     await window.AimQuestState.saveProgress({ stage:'longrid', stepKey: cards[currentIndex].id+':view', stepIndex: currentIndex, answer:null, meta:null });
 
-    document.getElementById('btnPrev').addEventListener('click', async () => {
-      if (currentIndex === 0) return;
-      currentIndex -= 1;
-      renderCard({ card: cards[currentIndex], leadName: lead.name || '', index: currentIndex, total, cardsWithExtra });
-      await window.AimQuestState.saveProgress({ stage:'longrid', stepKey: cards[currentIndex].id+':view', stepIndex: currentIndex, answer:null, meta:null });
-    });
-
-    document.getElementById('btnMore').addEventListener('click', async () => {
-      const host = document.getElementById('cardHost');
-      const extraId = 'extra_'+currentIndex;
-      const btnMore = document.getElementById('btnMore');
-      const extraEl = document.getElementById(extraId);
-      if (!cardsWithExtra.has(currentIndex) && extraEl){
-        extraEl.style.display = 'block';
-        extraEl.className = 'note';
-        extraEl.style.marginTop = '12px';
-        extraEl.textContent = 'Расширенное объяснение: представьте, что мы раскладываем шаг на подзадачи и проверяем каждую — так надёжнее закрепляется понимание.';
-        // Mark this card as having shown extra content
-        cardsWithExtra.add(currentIndex);
-        // Hide the button after showing extra content
-        btnMore.style.display = 'none';
-        await window.AimQuestState.saveProgress({ stage:'longrid', stepKey: cards[currentIndex].id+':more', stepIndex: currentIndex, answer:'more', meta:null });
-      } else if (cardsWithExtra.has(currentIndex)) {
-        // Extra content already shown, hide button
-        btnMore.style.display = 'none';
-      }
-    });
-
     function renderCompletionScreen(){
       const host = document.getElementById('cardHost');
       const bar = document.getElementById('progressBar');
       const stepNote = document.getElementById('stepNote');
-      const btnPrev = document.getElementById('btnPrev');
-      const btnMore = document.getElementById('btnMore');
       const btnNext = document.getElementById('btnNext');
       
       bar.style.width = '100%';
       stepNote.textContent = 'Чек-лист завершён';
       
-      // Hide previous and more buttons, show next button for final test
-      btnPrev.style.display = 'none';
-      btnMore.style.display = 'none';
+      // Show next button for final test
       btnNext.textContent = 'Перейти к финальному тесту';
       btnNext.disabled = false;
       
@@ -177,8 +144,6 @@
         currentIndex += 1;
         renderCard({ card: cards[currentIndex], leadName: lead.name || '', index: currentIndex, total, cardsWithExtra });
         await window.AimQuestState.saveProgress({ stage:'longrid', stepKey: cards[currentIndex].id+':view', stepIndex: currentIndex, answer:null, meta:null });
-        // Re-enable buttons if they were hidden
-        document.getElementById('btnPrev').style.display = '';
       } else {
         // Check if we're on completion screen or last card
         const host = document.getElementById('cardHost');
