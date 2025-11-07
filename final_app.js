@@ -1,108 +1,3 @@
-(function(){
-  function getParam(name){ const u = new URL(window.location.href); return u.searchParams.get(name); }
-
-  const steps = [
-    { 
-      id:'final_q1', 
-      title:'Вопрос 1: Ты смотришь видео. Твоя любимая скорость просмотра — это...', 
-      text:'Ты смотришь видео. Твоя любимая скорость просмотра — это...', 
-      choices:[
-        'а) x1.25 | x1.5 | x2.<br><br>Мой мозг может усваивать информацию быстрее, а лекторы любят говорить банальные вещи.',
-        'б) Обычная скорость (x1.0).<br><br>Люблю вникать в детали, даже если это медленнее.',
-        'в) Меня должно зацепить с первых секунд.<br><br>Если этого не произошло, то дальше неинтересно.'
-      ] 
-    },
-    { 
-      id:'final_q2', 
-      title:'Вопрос 2: Ты в гараже с новой Lamborghini и у тебя набор инструментов.<br>Что делаешь в первую очередь?', 
-      text:'Ты в гараже с новой Lamborghini и у тебя набор инструментов.<br>Что делаешь в первую очередь?', 
-      choices:[
-        'а) Попробую посмотреть какие функции есть на панели в салоне.<br><br> Поразмышляю как это могло быть построено. <br><br> Затем, полезу под капот и буду ковыряться, чтобы изучить каждую деталь по отдельности (анализ) и иметь полное представление о всей системе (синтез).',
-        'б) Открою капот, увижу, что там много всего.<br><br>Начну откручивать, начнёт получаться, потом случайно могу отвлечься и забыть что за чем идёт.<br><br>На этом хватит, дальше нет смысла пытаться, положу на место, лучше посижу в салоне.',
-        'в) Я под капот лезть не собираюсь.<br><br> А вдруг я там сломаю что-нибудь. Что мне голову забивать как работает машина?<br><br>Похожу по гаражу, посчитаю количество шагов.'
-      ] 
-    },
-    { 
-      id:'final_q3', 
-      title:'Вопрос 3: Почему ты вообще хочешь учиться Machine Learning?', 
-      text:'Почему ты вообще хочешь учиться Machine Learning?', 
-      choices:[
-        'а) Мне ИНТЕРЕСНО, как это работает.<br><br>Хочу понимать в чём идея, освоить новые инструменты, развивать свой интеллект.<br><br>Если там реально круто, то продолжить изучать и стать выдающимся профессионалом через несколько лет.',
-        'б) Это перспективно и за это хорошо платят.<br><br>НАДО осваивать новые навыки, чтобы быть в теме.<br><br>Плюс, зп хочу побольше, а в IT вроде платят.',
-        'в) Я потерян.<br><br>Я вроде хочу что-то изучать, но не знаю что.<br><br>Хочу кому-то заплатить, чтобы получить ощущение, что я начал принимать smart решения, а там меня за ручку доведут до денег.'
-      ] 
-    }
-  ];
-
-  function render(idx){
-    const s = steps[idx];
-    const host = document.getElementById('quiz');
-    const answers = s.choices.map((c,i)=>`<button class="right" data-i="${i}">${c}</button>`).join('');
-    host.innerHTML = `
-      <div class="question">
-        <div class="hint">Шаг ${idx+1} из ${steps.length}</div>
-        <h2>${s.title}</h2>
-        <p>${s.text}</p>
-        <div class="answers">${answers}</div>
-      </div>
-    `;
-    host.querySelectorAll('button[data-i]').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const answer = s.choices[Number(btn.getAttribute('data-i'))];
-        await window.AimQuestState.saveProgress({ stage:'final', stepKey:s.id, stepIndex:idx, answer, meta:null });
-        if (idx < steps.length-1) return render(idx+1);
-        return renderDone();
-      });
-    });
-  }
-
-  function renderDone(){
-    const host = document.getElementById('quiz');
-    host.innerHTML = `
-      <div class="question">
-        <h2>Поздравляем! Вы завершили квест 🎉</h2>
-        <div class="verdict">
-          <h3>Итоговый отчёт</h3>
-          <div class="verdict-content">Ваши ответы сохранены. Менеджер увидит прогресс и свяжется при необходимости.</div>
-        </div>
-        <div class="answers">
-          <button id="toStart" class="right">На главную</button>
-          <button id="buyFull" class="right" style="background-color: #E83141; margin-top: 10px;">Купить полную версию</button>
-        </div>
-      </div>
-    `;
-    document.getElementById('toStart').addEventListener('click', async () => {
-      await window.AimQuestState.saveProgress({ stage:'final', stepKey:'completed', stepIndex:steps.length-1, answer:'done', meta:null });
-      const ctx = window.AimQuestState.getContext();
-      const url = window.AimQuestState.buildUrl('index.html', ctx.leadId ? { lead_id: ctx.leadId } : {});
-      window.location.href = url;
-    });
-    document.getElementById('buyFull').addEventListener('click', () => {
-      // Отправляем цель go_to_bot в Яндекс Метрику
-      if (window.ym && typeof window.ym === 'function') {
-        try {
-          window.ym(window.YANDEX_METRIKA_ID, 'reachGoal', 'go_to_bot');
-        } catch (e) {
-          console.error('Yandex Metrika error:', e);
-        }
-      }
-      window.location.href = 'https://t.me/AiM_Pay_Bot';
-    });
-  }
-
-  window.addEventListener('DOMContentLoaded', async () => {
-    const leadId = getParam('lead_id');
-    if (leadId) window.AimQuestState.setLeadContext({ leadId });
-    try {
-      const last = await window.AimQuestState.getLastProgress();
-      if (last && last.stage === 'final' && typeof last.step_index === 'number'){
-        return render(Math.min(steps.length-1, Math.max(0, last.step_index)));
-      }
-    } catch(_){ }
-    render(0);
-  });
-})();
-
 const API_BASE = 'https://aim-pay-bot-server-4c57.onrender.com';
 
 function getLeadId() {
@@ -256,7 +151,7 @@ function renderStep(container, stepIndex, answers, onDone) {
             console.error('Yandex Metrika error:', e);
           }
         }
-        window.location.href = 'https://t.me/AiM_Pay_Bot';
+        window.location.href = 'https://t.me/AiM_Pay_Bot?start=me';
       });
     }
     return;
