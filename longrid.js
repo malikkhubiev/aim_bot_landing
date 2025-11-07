@@ -208,11 +208,18 @@
   }
 
   async function loadLead(leadId){
-    if (!leadId) return { name: '' };
+    console.log(`[longrid.js] Loading lead: ${leadId}`);
+    if (!leadId) {
+      console.log('[longrid.js] No leadId provided');
+      return { name: '' };
+    }
     try{
       const resp = await fetchJson(`${API}/form_warm/clients/${leadId}`);
+      console.log(`[longrid.js] Lead loaded:`, resp);
       if (resp.status==='success') return resp.lead || { name:'' };
-    }catch(_){ /* ignore */ }
+    }catch(e){ 
+      console.error('[longrid.js] Error loading lead:', e);
+    }
     return { name: '' };
   }
 
@@ -223,10 +230,13 @@
   }
 
   window.addEventListener('DOMContentLoaded', async () => {
+    console.log('[longrid.js] DOMContentLoaded, initializing longrid');
     const leadId = getParam('lead_id');
+    console.log(`[longrid.js] leadId from URL: ${leadId}`);
     if (leadId) window.AimQuestState.setLeadContext({ leadId });
 
     const lead = await loadLead(leadId);
+    console.log(`[longrid.js] Lead data:`, lead);
     updateLeadBanner(lead);
 
     const raw = await fetchText('longrid.txt');
@@ -270,8 +280,10 @@
     }
 
     document.getElementById('btnNext').addEventListener('click', async () => {
+      console.log(`[longrid.js] Next button clicked, currentIndex=${currentIndex}, total=${total}`);
       if (currentIndex < total-1){
         currentIndex += 1;
+        console.log(`[longrid.js] Moving to card ${currentIndex + 1}/${total}: ${cards[currentIndex].title}`);
         renderCard({ card: cards[currentIndex], leadName: lead.name || '', index: currentIndex, total, cardsWithExtra });
         await window.AimQuestState.saveProgress({ stage:'longrid', stepKey: cards[currentIndex].id+':view', stepIndex: currentIndex, answer:null, meta:null });
       } else {

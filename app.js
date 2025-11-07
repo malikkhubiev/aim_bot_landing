@@ -2,77 +2,7 @@
   const API = 'https://aim-pay-bot-server-4c57.onrender.com';
   function getParam(name){ const u = new URL(window.location.href); return u.searchParams.get(name); }
   async function fetchJson(url, opts){ const r = await fetch(url, opts); if(!r.ok) throw new Error('HTTP '+r.status); return await r.json(); }
-
-  const questions = [
-    { id:'q1', title:'Q1: Корреляция и причинность', text:'Мы заметили связь между числом пожарных и разрушениями. Нужно ли звать меньше пожарных?', choices:[ 'Да', 'Нет' ] },
-    { id:'q2', title:'Q2: Мороженое и утопления', text:'Чем больше мороженого — тем больше утоплений. Запретить мороженое?', choices:[ 'Да', 'Нет' ] },
-    { id:'q3', title:'Q3: Книги и учёба', text:'Чем больше книг, тем лучше учится ребёнок. Достаточно завалить дом книгами?', choices:[ 'Да', 'Нет' ] }
-  ];
-
-  function renderStep(idx){
-    const q = questions[idx];
-    const host = document.getElementById('quiz');
-    const lead = window.leadData || {};
-    const nameLine = lead.name ? `${lead.name}, смотри 👇` : 'Смотри 👇';
-    const answers = q.choices.map((c,i)=>`<button class="right" data-i="${i}">${c}</button>`).join('');
-    host.innerHTML = `
-      <div class="question">
-        <div class="hint">Шаг ${idx+1} из ${questions.length}</div>
-        <h2>${q.title}</h2>
-        <div class="myown">${nameLine}</div>
-        <p>${q.text}</p>
-        <div class="answers">${answers}</div>
-      </div>
-    `;
-    host.querySelectorAll('button[data-i]').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const answerIdx = Number(btn.getAttribute('data-i'));
-        const answer = q.choices[answerIdx];
-        await window.AimQuestState.saveProgress({ stage:'quiz', stepKey:q.id, stepIndex:idx, answer, meta:null });
-        if (idx < questions.length-1){
-          renderStep(idx+1);
-        } else {
-          renderCompleted();
-        }
-      });
-    });
-  }
-
-  function renderCompleted(){
-    const host = document.getElementById('quiz');
-    const leadId = (window.leadData && window.leadData.id) || getParam('lead_id') || '';
-    host.innerHTML = `
-      <div class="question">
-        <h2>Поздравляем! Тест на мышление пройден 🎉</h2>
-        <p style="font-size: 20px; margin: 20px 0; line-height: 1.6;">
-          Тебя ждёт чек-лист "Как построить модель ML" для Уолл-стрит 🐺?<br><br>
-          Ты пройдёшь 15 этапов в игровом формате и узнаешь стиль работы у инженера ML.
-        </p>
-        <div class="answers">
-          <button id="openLongrid" class="right">Чек-лист Уолл-стрит 🐺</button>
-        </div>
-      </div>
-    `;
-    document.getElementById('openLongrid').addEventListener('click', async () => {
-      await window.AimQuestState.saveProgress({ stage:'quiz', stepKey:'completed', stepIndex:questions.length-1, answer:'done', meta:null });
-      const url = window.AimQuestState.buildUrl('longrid.html', leadId ? { lead_id: leadId } : {});
-      window.location.href = url;
-    });
-  }
-
-  window.addEventListener('DOMContentLoaded', async () => {
-    const leadId = getParam('lead_id');
-    if (leadId) window.AimQuestState.setLeadContext({ leadId });
-    // Attempt resume if user landed here directly
-    try {
-      const last = await window.AimQuestState.getLastProgress();
-      if (last && last.stage === 'quiz' && typeof last.step_index === 'number'){
-        renderStep(Math.min(questions.length-1, Math.max(0, last.step_index)));
-        return;
-      }
-    } catch(_){ }
-    renderStep(0);
-  });
+  // Старая функция renderStep удалена, используем функцию renderStep ниже (239-338)
 })();
 
 const API_BASE = 'https://aim-pay-bot-server-4c57.onrender.com';
@@ -178,8 +108,10 @@ const quizData = [
 ];
 
 function renderStep(container, stepIndex, onDone) {
+  console.log(`[app.js] renderStep called: stepIndex=${stepIndex}, total=${quizData.length}`);
   container.innerHTML = '';
   if (stepIndex >= quizData.length) {
+    console.log('[app.js] All steps completed, showing completion screen');
     const done = document.createElement('div');
     done.className = 'question';
     const h = document.createElement('h3');
@@ -226,12 +158,14 @@ function renderStep(container, stepIndex, onDone) {
   next.addEventListener('click', () => onDone());
 
   if (item.type === 'reveal') {
+    console.log(`[app.js] Rendering reveal question: ${item.title}`);
     const q = document.createElement('p');
     q.innerHTML = item.question;
     const reveal = document.createElement('button');
     reveal.classList.add("right")
     reveal.textContent = '✅ Правильный ответ';
     reveal.addEventListener('click', () => {
+      console.log(`[app.js] Reveal button clicked for step ${stepIndex + 1}: ${item.title}`);
       reveal.disabled = true;
       const ans = document.createElement('div');
       ans.className = 'answer';
@@ -244,6 +178,7 @@ function renderStep(container, stepIndex, onDone) {
     body.appendChild(q);
     body.appendChild(reveal);
   } else if (item.type === 'choice') {
+    console.log(`[app.js] Rendering choice question: ${item.title}`);
     const btns = document.createElement('div');
     btns.className = 'answers';
     const currentAnswer = savedAnswers[(stepIndex + 1).toString()];
@@ -255,6 +190,7 @@ function renderStep(container, stepIndex, onDone) {
         b.classList.add('selected');
       }
       b.addEventListener('click', () => {
+        console.log(`[app.js] Choice selected for step ${stepIndex + 1}: ${opt}`);
         // Разрешаем изменить выбор
         btns.querySelectorAll('button').forEach(x => {
           x.classList.remove('selected');
@@ -279,11 +215,17 @@ function renderStep(container, stepIndex, onDone) {
 }
 
 (async function init() {
+  console.log('[app.js] Initializing quiz application');
   await loadSavedAnswers();
   const root = document.getElementById('quiz');
+  if (!root) {
+    console.error('[app.js] Quiz container not found!');
+    return;
+  }
   let step = 0;
   const next = () => {
     step += 1;
+    console.log(`[app.js] Moving to next step: ${step}`);
     renderStep(root, step, next);
   };
   renderStep(root, step, next);
