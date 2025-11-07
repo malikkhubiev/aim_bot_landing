@@ -31,7 +31,12 @@
 
   function getLocalProgress(){
     const raw = localStorage.getItem(STORAGE_KEY);
-    return safeParse(raw, { items: [] });
+    const parsed = safeParse(raw, { items: [] });
+    // Ensure we always return an object with items array
+    if (!parsed || typeof parsed !== 'object' || !Array.isArray(parsed.items)) {
+      return { items: [] };
+    }
+    return parsed;
   }
 
   function setLocalProgress(items){

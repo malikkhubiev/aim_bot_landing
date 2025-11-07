@@ -43,10 +43,13 @@
     const leadId = (window.leadData && window.leadData.id) || getParam('lead_id') || '';
     host.innerHTML = `
       <div class="question">
-        <h2>Отлично! Тест на мышление пройден.</h2>
-        <p>Мы подготовили бесплатный Чек-лист Wall Street с 15 этапами построения моделей машинного обучения.</p>
+        <h2>Поздравляем! Тест на мышление пройден 🎉</h2>
+        <p style="font-size: 20px; margin: 20px 0; line-height: 1.6;">
+          Хотите узнать как построить машинное обучение для компании на Wall Street?<br><br>
+          Вы пройдёте все 15 этапов в интерактивном режиме и узнаете какой стиль работы у инженера ML.
+        </p>
         <div class="answers">
-          <button id="openLongrid" class="right">Открыть</button>
+          <button id="openLongrid" class="right">Перейти к чек-листу Wall Street</button>
         </div>
       </div>
     `;
@@ -182,10 +185,27 @@ function renderStep(container, stepIndex, onDone) {
     const h = document.createElement('h3');
     h.innerHTML = 'Поздравляем!<br>Вы прошли тест 🎉';
     const p = document.createElement('p');
-    p.innerHTML = 'Спасибо за участие!';
-    p.classList.add("thanks")
+    p.innerHTML = 'Хотите узнать как построить машинное обучение для компании на Wall Street?<br><br>Вы пройдёте все 15 этапов в интерактивном режиме и узнаете какой стиль работы у инженера ML.';
+    p.classList.add("thanks");
+    p.style.fontSize = '20px';
+    p.style.margin = '20px 0';
+    p.style.lineHeight = '1.6';
+    
+    const leadId = getLeadId();
+    const btn = document.createElement('button');
+    btn.className = 'right';
+    btn.textContent = 'Перейти к чек-листу Wall Street';
+    btn.style.marginTop = '20px';
+    btn.addEventListener('click', async () => {
+      const url = window.AimQuestState ? 
+        window.AimQuestState.buildUrl('longrid.html', leadId ? { lead_id: leadId } : {}) :
+        `longrid.html${leadId ? '?lead_id=' + leadId : ''}`;
+      window.location.href = url;
+    });
+    
     done.appendChild(h);
     done.appendChild(p);
+    done.appendChild(btn);
     container.appendChild(done);
     return;
   }
