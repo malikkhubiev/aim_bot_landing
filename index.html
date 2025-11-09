@@ -7,8 +7,8 @@
         <script src="tailwind.js"></script>
         <style>
             @font-face {
-                font-family: 'Jura';
-                src: url('Jura.ttf') format('truetype');
+                font-family: 'Widock';
+                src: url('Widock.otf') format('truetype');
                 font-weight: 300 700;
                 font-style: normal;
                 font-display: swap;
@@ -205,8 +205,10 @@
         </script>
 
     <style>
+        *{
+            font-family: 'Widock', sans-serif;
+        }
         body {
-            font-family: 'Jura', sans-serif;
             background-color: #0a0a1a;
             color: #e0e0e0;
         }
@@ -264,7 +266,7 @@
         @media (max-width: 775px) {
             .cardy{
                 margin: 0;
-                margin-top: 50px;
+                margin-top: 85px;
             }
             .crypto-card:hover {
                 transform: translateY(-5px) scale(1.2);
@@ -350,6 +352,7 @@
         .aim {
             background-color: #E83141;
             color: white;
+            font-size: 16px !important;
         }
 
         .aim-side {
@@ -371,7 +374,7 @@
         }
 
         .aim-px {
-            padding: 0 1.5rem 0 3rem;
+            padding: 0 5px 0 10px;
         }
 
         @media (max-width: 880px) {
@@ -407,7 +410,7 @@
             margin-top: 4rem;
             background-color: #E83141;
             color: white;
-            font-size: 25px;
+            font-size: 19px;
         }
 
         .biggy{
@@ -693,7 +696,7 @@
             border: 2px solid black;
             transition: 0.5s;
             padding: 30px 40px;
-            font-size: 25px;
+            font-size: 23px;
             animation: blackyvis 0.5s infinite
         }
         @keyframes blackyvis {
@@ -867,7 +870,7 @@
             }
 
             .makesmall{
-                font-size: 45px !important;
+                font-size: 31px !important;
             }
 
             .videlit{
@@ -881,14 +884,14 @@
 
         @media (max-width: 575px) {
             .biggy{
-                font-size: 50px !important;
+                font-size: 25px !important;
             }
             .whitee{
                 padding: 25px;
             }
             .videlit{
                 padding: 5px 5px;
-                font-size: 18px !important;
+                font-size: 23px !important;
             }
             .b{
                 max-width: 375px !important;
@@ -928,6 +931,10 @@
                                 var(--sb-track-color);
             }
         }
+
+        .logo_header{
+            width: 44px;
+        }
     </style>
 </head>
 
@@ -937,7 +944,7 @@
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-2">
                 <i class="fas fa-robot text-3xl crypto-text" aria-hidden="true"></i>
-                <span class="text-xl font-bold text-white">AiM<span class="crypto-text">Course</span></span>
+                <img src="logo_header.svg" class="logo_header">
             </div>
             <div class="hidden md:flex space-x-6">
                 <a href="#about" class="text-white hover:crypto-text transition">О курсе</a>
@@ -971,9 +978,9 @@
                     Машинное обучение<span class="crypto-text"> без математики</span>
                 </h1>
                 <p class="text-xl text-gray-300 mb-8">
-                    Ты построишь свою первую модель с нуля<span class="outside">УЖЕ СЕГОДНЯ</span><br>
-                    <span class="outside">Готовый код с объяснениями</span>. <br>
-                    Построение моделей <span class="outside">без математики</span> на <span class="outside">Python</span> и работа с <span class="outside">ML-библиотеками</span>.
+                    Ты построишь свою первую модель с нуля <span class="outside">УЖЕ СЕГОДНЯ</span><br>
+                    <span class="outside">Готовый код с объяснениями.</span> <br>
+                    Построение моделей без математики на Python и работа с ML-библиотеками.
                 </p>
                 <div class="mb-8">
                     <div class="hidden md:block mb-4">
@@ -988,15 +995,15 @@
                     </div>
                 </div>
                 <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                    <button onclick="openDemoModal()" class="crypto-btn px-8 py-4 rounded-full text-lg crypto-pulse text-center">
+                    <button onclick="openDemoModal()" class="crypto-btn px-8 py-4 rounded-full text-md crypto-pulse text-center">
                         Начать обучение
                     </button>
                     <a href="#program"
-                        class="px-8 py-4 rounded-full text-lg border crypto-border text-white hover:bg-gray-800 transition text-center" title="Программа курса ML">
+                        class="px-8 py-4 rounded-full text-md border crypto-border text-white hover:bg-gray-800 transition text-center" title="Программа курса ML">
                         Программа курса
                     </a>
                     <button onclick="openDemoModal()"
-                        class="rounded-full text-xl text-black bg-white demoy" title="Демо курса Машинного обучения">
+                        class="rounded-full text-md text-black bg-white demoy" title="Демо курса Машинного обучения">
                         &#9658; Демо курса
                     </button>
                 </div>
@@ -1007,7 +1014,7 @@
                         КУРС С СЕРТИФИКАТОМ
                     </div>
                     <span>🚀 ML для буста hard skills</span>
-                    <h3 class="text-xl font-bold text-white mb-2">Машинное обучение С НУЛЯ</h3>
+                    <h3 class="text-xl font-bold text-white mb-4 mt-4">Машинное обучение С НУЛЯ</h3>
                     <div class="flex flex-wrap gap-2 mb-4">
                         <span class="crypto-chip">Python</span>
                         <span class="crypto-chip">Scikit-learn</span>
@@ -1039,10 +1046,10 @@
     <section id="about" class="py-16 px-6 bg-gray-900">
         <div class="container mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Машинное обучение <span class="crypto-text">С НУЛЯ</span> на Python <span
-                        class="crypto-text">БЕЗ МАТЕМАТИКИ</span></h2>
+                <h2 class="text-2xl md:text-4xl font-bold text-white mb-4">Машинное обучение <span class="crypto-text">С НУЛЯ</span> на Python <span
+                        class="crypto-text">БЕЗ МАТЕМАТИКИ</span></h2><br>
                 <p class="text-xl text-gray-300 max-w-3xl mx-auto">
-                    Уже сегодня ты напишешь, натренируешь и проверишь в действии свою первую модель.
+                    Уже сегодня ты напишешь, натренируешь и проверишь в действии свою первую модель.<br><br>
                     Научишься обрабатывать и визуализировать данные. Натренируешь Keras-нейросети.
                 </p>
             </div>
@@ -1052,7 +1059,7 @@
                     <div class="text-4xl mb-4 ml-text">
                         📚
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Готовые блокноты для ML</h3>
+                    <h3 class="text-xl font-bold text-white mb-3">Готовые блокноты кода для ML</h3>
                     <p class="text-gray-300">
                         Полный код под рукой: запускай, редактируй, используй. Все данные в одном месте.
                     </p>
@@ -1064,7 +1071,7 @@
                     </div>
                     <h3 class="text-xl font-bold text-white mb-3">Курс ML без воды и математики</h3>
                     <p class="text-gray-300">
-                        Ты поймёшь идею и отличия моделей. Научишься их использовать. Начнёшь сразу с практики.
+                        Ты поймёшь отличия моделей. Научишься их использовать. Начнёшь сразу с практики.
                     </p>
                 </div>
 
@@ -1074,7 +1081,7 @@
                     </div>
                     <h3 class="text-xl font-bold text-white mb-3">Курс для абсолютных новичков</h3>
                     <p class="text-gray-300">
-                        Не надо ументь программировать. Мы дадим тебе базу и даже дополнительные материалы
+                        Не надо уметь программировать. Мы дадим тебе базу и доп. материалы
                     </p>
                 </div>
             </div>
@@ -1085,7 +1092,7 @@
     <section id="program" class="py-16 bg-gray-900 aim-px">
         <div class="container mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4 biggy">Программа курса по <span
+                <h2 class="text-2xl md:text-4xl font-bold text-white mb-4 biggy">Программа курса по <span
                     class="crypto-text">машинному обучению</span> на Python</h2>
                 <p class="text-xxl whitee" style="text-align: left;">
                     <span class="boldy">12</span> модулей: <br>
@@ -1346,7 +1353,7 @@
 
             <div class="max-w-md mx-auto grid items-center md:grid-cols-1">
                 <div class="crypto-timer text-center">
-                    <div class="text-red-400 font-bold text-2xl mb-2">🔥 Ворвись РАНЬШЕ, забери БОЛЬШЕ 🔥</div>
+                    <div class="text-red-400 font-bold text-2xl mb-2">🔥<br>Ворвись РАНЬШЕ, забери БОЛЬШЕ<br>🔥</div>
                     <div id="countdown-price" class="text-white text-2xl font-mono"></div>
                 </div>
             </div>
@@ -1384,8 +1391,8 @@
     <!-- Демо-секция после программы обучения -->
     <section class="py-32 px-6 bg-white">
         <div class="container mx-auto text-center">
-            <p class="text-5xl text-black max-w-3xl mx-auto mb-16"> БОИШЬСЯ РИСКОВАТЬ?</p>
-            <p class="text-3xl text-black max-w-3xl mx-auto mb-16 font-bold">Наш курс - это способ <span class="crypto-text">ПРИНЕСТИ ПОЛЬЗУ</span>, поэтому 150+ видео из курса мы выложили <span class="crypto-text">СОВЕРШЕННО БЕСПЛАТНО</span>. Открой "Демо курса" и убедись в огромной пользе <span class="crypto-text">ПЕРЕД ПОКУПКОЙ!</span></p>
+            <p class="text-4xl text-black max-w-3xl mx-auto mb-16"> БОИШЬСЯ РИСКОВАТЬ?</p>
+            <p class="text-2xl text-black max-w-3xl mx-auto mb-16 font-bold">Наш курс - это способ <span class="crypto-text">ПРИНЕСТИ ПОЛЬЗУ</span>, поэтому 150+ видео из курса мы выложили <span class="crypto-text">СОВЕРШЕННО БЕСПЛАТНО</span>. Открой "Демо курса" и убедись в огромной пользе <span class="crypto-text">ПЕРЕД ПОКУПКОЙ!</span></p>
             <button onclick="openDemoModal()" class="blacky" title="Демо материалов курса ML"> &#9658; Демо курса </button>
         </div>
     </section>
@@ -1394,7 +1401,7 @@
     <section id="faq" class="py-16 px-6">
         <div class="container mx-auto max-w-4xl">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4"><span class="crypto-text">Вопросы</span> о курсе машинного обучения 2025</h2>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4"><span class="crypto-text">Вопросы</span><br>о курсе машинного обучения 2025</h2>
             </div>
 
             <div class="space-y-4">
@@ -1459,8 +1466,8 @@
     <!-- CTA -->
     <section class="py-40 px-6 bg-white">
         <div class="container mx-auto text-center maxwidth">
-            <h2 class="text-5xl md:text-5xl font-bold text-black mb-6">Курс нужен для того, чтобы изучить основы ML <span class="crypto-text" style="text-transform: uppercase;"><br>в 3-4 раза быстрее!</span></h2>
-            <p class="text-2xl text-black max-w-3xl mx-auto mb-8">
+            <h2 class="text-4xl md:text-5xl font-bold text-black mb-6">Курс нужен для того, чтобы изучить основы ML <span class="crypto-text" style="text-transform: uppercase;"><br>в 3-4 раза быстрее!</span></h2>
+            <p class="text-xl text-black max-w-3xl mx-auto mb-8">
                 Наш курс - <span class="crypto-text font-bold" style="text-transform: uppercase;">экономия твоего времени!</span> <br> Ты хочешь тратить недели на поиск, чтение сложных книжек и просмотр нудных лекций? <br>Курс для тех, кто <span class="crypto-text font-bold" style="text-transform: uppercase;">готов действовать и достигать результата!</span>
             </p>
             <div class="hidden md:block mb-6">
@@ -2283,13 +2290,6 @@
                     sendMessage();
                 }
             });
-            
-            // Автоматическое раскрытие через 5 секунд
-            setTimeout(() => {
-                if (!chatWidget.classList.contains('active')) {
-                    toggleChat();
-                }
-            }, 5000);
             
             // Загрузка истории при открытии
             let historyLoaded = false;
