@@ -6,12 +6,12 @@
   <title>Стоит ли тебе купить курс?</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    *{text-align: center;}
+    *{text-align: left;}
     html, body {margin: 0; padding: 0;}
     .logo{width: 150px;}
     h1{font-size: 50px;}
-    p{font-size: 19px;}
-    .thanks{text-align: center;}
+    p{font-size: 20px;}
+    .thanks{text-align: left;}
     .right{background-color: #1c1c1c; margin: 20px auto; font-size: 25px; cursor: pointer; padding: 20px; border-radius: 10px; border: 1px solid #484848; color: white;}
     .form { background:#fff; border:1px solid #e6eaf2; border-radius:10px; padding:50px; margin:16px 0 }
     .row { display:flex; gap:12px; flex-wrap:wrap }
@@ -20,15 +20,76 @@
     .hint { color:#667085; font-size:12px }
     .question { display: flex; justify-content: start; align-items: center; flex-direction: column; background: transparent; border: 0; border-radius:10px; padding:30px 20px; margin:12px 0 }
     .answers { display:flex; justify-content: start; align-items: start; flex-direction: column;}
-    .answers button { max-width: 350px; border:1px solid #cfd6e4; background:#1c1c1c; border-radius:8px; padding:24px; cursor:pointer; color: white; font-size: 17px; }
-    .answers button.selectedd { background:#E83141; color: white }
-    .answers button:hover { background:#E83141; }
+    .answers button { transition: 0.5s; border:1px solid #cfd6e4; background:#1c1c1c; border-radius:8px; padding:24px; cursor:pointer; color: white; font-size: 25px; }
+    .answers button.selectedd { background:#ffffff; color: black; }
+    .answers button:hover { background:#ffffff; color: black; }
     .myown{font-size:20px; color:#fff; margin-top:8px; display: flex;justify-content: start;align-items: center; flex-direction: column;}
     .myown b{margin-top: 20px;}
     .verdict { background:#1c1c1c; border:1px solid #e6eaf2; border-radius:10px; padding:30px 20px; margin:12px 0; color: white; }
     .verdict h3 { color: #fff; }
     .verdict-content { text-align: left; margin-top: 20px; }
     .ans{text-align: left; font-size: 30px;}
+    .responsive-container {
+        position: relative;
+        width: 100%;
+        max-width: 1000px; /* Максимальная ширина как в оригинале */
+        margin: 0 auto;
+    }
+    
+    .responsive-iframe {
+        width: 100%;
+        height: 0;
+        padding-bottom: 56.25%; /* Соотношение сторон 16:9 (9/16 = 0.5625) */
+        position: relative;
+    }
+    
+    .responsive-iframe iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+    
+    /* Дополнительные настройки для очень маленьких экранов */
+    @media (max-width: 480px) {
+        .responsive-container {
+            max-width: 100%;
+        }
+    }
+
+    .contic{
+      width: 100%;
+      text-align: left;
+      display: flex;
+      justify-content: start;
+      align-items: start;
+      flex-direction: column;
+    }
+
+    h3{
+      font-size: 29px;
+    }
+
+    .header{
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    h1{
+      text-align: center;
+    }
+
+    .ans{
+      font-size: 25px;
+    }
+    .descr{
+      font-size: 25px;
+    }
   </style>
   </head>
 <body>
@@ -41,9 +102,17 @@
       </div>
     </div>
   </header>
-  <main class="container">
+  <div class="responsive-container">
+    <div class="responsive-iframe">
+          <iframe src="https://rutube.ru/play/embed/0569cf48fbe35f8d0a4f29a4af031719/?p=ACdL6A6PdFz_8BKJrCmqmQ" 
+                  allow="clipboard-write; autoplay" 
+                  webkitAllowFullScreen 
+                  mozallowfullscreen 
+                  allowFullScreen>
+          </iframe>
+    </div>
     <section id="quiz"></section>
-  </main>
+  </div>
   <script src="state.js"></script>
   <script src="final_app.js"></script>
   <script>

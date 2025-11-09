@@ -184,7 +184,7 @@
     const contentHtml = card.chunks
       .map(p=>p.trim())
       .filter(Boolean)
-      .map(p=>`<p style="text-align:left;margin:8px 0">${p}</p>`)
+      .map(p=>`<p style="text-align:left;margin:8px 0; font-size: 22px;">${p}</p>`)
       .join('');
 
     let microHtml = '';

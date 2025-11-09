@@ -98,12 +98,12 @@ const quizData = [
   {
     type: 'choice',
     title: '9. Хотите получать материалы в Телеграм?',
-    options: ['Да ✅', 'Нет ❌']
+    options: ['Нет ❌', 'Да ✅']
   },
   {
     type: 'choice',
     title: '10. Решение о курсе',
-    options: ['Хочу купить курс сейчас 💰', 'Хочу изучить программу подробнее 📖', 'Пока отложу / это не моё 🛑']
+    options: ['Хочу купить курс сейчас 💖', 'Хочу изучить программу подробнее 📖']
   }
 ];
 
@@ -187,16 +187,16 @@ function renderStep(container, stepIndex, onDone) {
       const b = document.createElement('button');
       b.textContent = opt;
       if (currentAnswer === opt) {
-        b.classList.add('selected');
+        b.classList.add('selected_button');
       }
       b.addEventListener('click', () => {
         console.log(`[app.js] Choice selected for step ${stepIndex + 1}: ${opt}`);
         // Разрешаем изменить выбор
         btns.querySelectorAll('button').forEach(x => {
-          x.classList.remove('selected');
+          x.classList.remove('selected_button');
           x.disabled = false;
         });
-        b.classList.add('selected');
+        b.classList.add('selected_button');
         next.disabled = false;
         // Отправляем выбранный вариант (может обновиться, если уже был ответ)
         sendProgress(stepIndex + 1, opt);

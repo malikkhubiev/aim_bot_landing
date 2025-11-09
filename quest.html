@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css">
   <style>
     *{text-align: center;}
-    html, body {margin: 0; padding: 0;}
+    html, body {margin: 0; padding: 0; display: flex; justify-content: start; align-items: center; flex-direction: column;}
     .logo{width: 150px;}
     h1{font-size: 50px;}
     p{font-size: 19px;}
@@ -18,11 +18,12 @@
     .row .field { flex:1 1 240px; display:flex; flex-direction:column; gap:6px }
     .field input, .field textarea { border:1px solid #cfd6e4; border-radius:8px; padding:10px 12px; font-size:20px }
     .hint { color:#667085; font-size:12px }
-    .question { display: flex; justify-content: start; align-items: center; flex-direction: column; background: #1c1c1c; border:1px solid #e6eaf2; border-radius:10px; padding:30px 20px; margin:12px 0 }
-    .answers { display:flex; flex-wrap:wrap; gap:8px }
-    .answers button { border:1px solid #cfd6e4; background:#1c1c1c; border-radius:8px; padding:8px 12px; cursor:pointer }
+    .question { max-width: 500px; display: flex; justify-content: start; align-items: center; flex-direction: column; background: #1c1c1c; border:1px solid #e6eaf2; border-radius:10px; padding:30px 20px; margin:12px 0 }
+    .answers { display:flex; justify-content: center; align-items: center; flex-wrap:wrap; gap:8px }
+    .answers button { border:1px solid #cfd6e4; background:#1c1c1c; border-radius:8px; padding:8px 12px; cursor:pointer; color: white; font-size: 25px; transition: 0.5s; }
     .myown{font-size:20px; color:#fff; margin-top:8px; display: flex;justify-content: start;align-items: center; flex-direction: column;}
     .myown b{margin-top: 20px;}
+    .selected_button{background-color: #fff !important; color: black !important;}
   </style>
   </head>
 <body>
