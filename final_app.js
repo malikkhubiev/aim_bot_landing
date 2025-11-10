@@ -211,7 +211,7 @@ function renderStep(container, stepIndex, answers, onDone) {
   next.classList.add("right");
   next.disabled = !answers[stepIndex];
   next.addEventListener('click', () => onDone());
-
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   if (item.type === 'choice') {
     const btns = document.createElement('div');
     btns.className = 'answers';

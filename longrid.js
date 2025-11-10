@@ -299,6 +299,7 @@
     }
 
     document.getElementById('btnNext').addEventListener('click', async () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       console.log(`[longrid.js] Next button clicked, currentIndex=${currentIndex}, total=${total}`);
       if (currentIndex < total-1){
         currentIndex += 1;
