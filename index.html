@@ -1897,6 +1897,49 @@
                     phoneInput.value = formatRuLocal(local);
                 });
 
+                // Функция для установки cookie
+                function setCookie(name, value, days) {
+                    const expires = new Date();
+                    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+                    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+                }
+
+                // Функция для получения cookie
+                function getCookie(name) {
+                    const nameEQ = name + "=";
+                    const ca = document.cookie.split(';');
+                    for(let i = 0; i < ca.length; i++) {
+                        let c = ca[i];
+                        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+                    }
+                    return null;
+                }
+
+                // Функция для проверки, была ли форма уже отправлена
+                function checkFormSubmitted(email, phone) {
+                    // Проверка в localStorage
+                    const submittedKey = `form_submitted_${email.toLowerCase()}_${phone}`;
+                    if (localStorage.getItem(submittedKey)) {
+                        return true;
+                    }
+                    
+                    // Проверка в cookies
+                    const cookieKey = `form_submitted_${email.toLowerCase()}_${phone}`;
+                    if (getCookie(cookieKey)) {
+                        return true;
+                    }
+                    
+                    return false;
+                }
+
+                // Функция для сохранения факта отправки формы
+                function markFormSubmitted(email, phone) {
+                    const key = `form_submitted_${email.toLowerCase()}_${phone}`;
+                    localStorage.setItem(key, 'true');
+                    setCookie(key, 'true', 365); // Храним 1 год
+                }
+
                 // Обработчик отправки формы
                 form.addEventListener('submit', async function(e) {
                     e.preventDefault();
@@ -1921,6 +1964,13 @@
                         emailInput.focus();
                         return;
                     }
+
+                    // Проверка на дубликаты перед отправкой
+                    if (checkFormSubmitted(email, normalized)) {
+                        alert('Форма с такими данными уже была отправлена. Один пользователь может отправить форму только один раз.');
+                        return;
+                    }
+
                     // подменяем поле для отправки на бэкенд нормализованным значением
                     phoneInput.value = formatRuLocal(normalized.slice(1));
 
@@ -1972,6 +2022,9 @@
                         const data = await res.json();
                         console.log("data from sending lead", data)
                         if (res.ok && data.status === 'success') {
+                            // Помечаем форму как отправленную
+                            markFormSubmitted(email, normalized);
+                            
                             // Отправляем цель в Яндекс Метрику (зависит от METRICS_GOAL)
                             if (window.ym && typeof window.ym === 'function') {
                                 try {
