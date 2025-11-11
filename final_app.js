@@ -9,17 +9,33 @@ async function sendProgress(step, answer) {
   const leadId = getLeadId();
   if (!leadId) return;
   try {
-    const response = await fetch(`${API_BASE}/form_warm/clients/${leadId}/answers`, {
+    // Определяем step_index из step (final_q1 -> 0, final_q2 -> 1, final_q3 -> 2)
+    let stepIndex = null;
+    let stepKey = step;
+    if (step.startsWith('final_q')) {
+      const match = step.match(/final_q(\d+)/);
+      if (match) {
+        stepIndex = parseInt(match[1]) - 1; // step_index начинается с 0
+        stepKey = step;
+      }
+    }
+    
+    const response = await fetch(`${API_BASE}/form_warm/clients/${leadId}/progress`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ step, answer })
+      body: JSON.stringify({ 
+        stage: 'final',
+        step: stepKey,
+        step_index: stepIndex,
+        answer: typeof answer === 'object' ? JSON.stringify(answer) : answer 
+      })
     });
-    // Если ответ уже существует (409), обновляем его
-    if (response.status === 409) {
+    // Если ответ уже существует, обновляем его
+    if (!response.ok && response.status !== 200) {
       await fetch(`${API_BASE}/form_warm/clients/${leadId}/answers`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ step, answer })
+        body: JSON.stringify({ step: stepKey, answer: typeof answer === 'object' ? JSON.stringify(answer) : answer })
       });
     }
   } catch (_) {}
