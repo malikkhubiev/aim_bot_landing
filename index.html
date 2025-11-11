@@ -2044,7 +2044,7 @@
                             const questUrl = new URL('https://ai-bot-landing.vercel.app/quest.html');
                             if (leadId) questUrl.searchParams.set('lead_id', leadId);
                             questUrl.searchParams.set('notice', 'demo_sent');
-                            // window.location.href = questUrl.toString();
+                            window.location.href = questUrl.toString();
                         } else {
                             alert(data.message || 'Ошибка отправки. Попробуйте позже.');
                         }
