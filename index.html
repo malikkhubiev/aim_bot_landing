@@ -55,7 +55,7 @@
             (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
             
             // Инициализация Яндекс Метрики с ID из переменной окружения или значения по умолчанию
-            window.YANDEX_METRIKA_ID = window.YANDEX_METRIKA_ID || 'YANDEX_METRIKA_ID';
+            window.YANDEX_METRIKA_ID = '105007364';
             ym(window.YANDEX_METRIKA_ID, "init", {
                 clickmap:true,
                 trackLinks:true,
@@ -1991,7 +1991,7 @@
                             const questUrl = new URL('https://ai-bot-landing.vercel.app/quest.html');
                             if (leadId) questUrl.searchParams.set('lead_id', leadId);
                             questUrl.searchParams.set('notice', 'demo_sent');
-                            window.location.href = questUrl.toString();
+                            // window.location.href = questUrl.toString();
                         } else {
                             alert(data.message || 'Ошибка отправки. Попробуйте позже.');
                         }
