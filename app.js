@@ -97,7 +97,7 @@ const quizData = [
   },
   {
     type: 'choice',
-    title: '9. Хотите получать материалы в Телеграм?',
+    title: '9. Умеете пользоваться Телеграмом?',
     options: ['Нет ❌', 'Да ✅']
   },
   {
@@ -173,7 +173,7 @@ function renderStep(container, stepIndex, onDone) {
       body.appendChild(ans);
       next.disabled = false;
       // фиксируем клик по кнопке ответа для шагов 1-6
-      sendProgress(stepIndex + 1, 'reveal_clicked');
+      sendProgress(stepIndex + 1, '✅');
     });
     body.appendChild(q);
     body.appendChild(reveal);
@@ -199,7 +199,11 @@ function renderStep(container, stepIndex, onDone) {
         b.classList.add('selected_button');
         next.disabled = false;
         // Отправляем выбранный вариант (может обновиться, если уже был ответ)
-        sendProgress(stepIndex + 1, opt);
+        let indProgress = stepIndex + 1
+        if  (indProgress == 7) sendProgress("7: Интерес к ML", opt)
+        else if  (indProgress == 8) sendProgress("8: Готов изучать", opt)
+        else if  (indProgress == 9) sendProgress("9: Умеете пользоватья TG", opt)
+        else if  (indProgress == 10) sendProgress("10: Готов купить", opt)
       });
       btns.appendChild(b);
     });
