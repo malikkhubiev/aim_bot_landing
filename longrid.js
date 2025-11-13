@@ -1,5 +1,5 @@
 (function(){
-  const API = 'https://aim-pay-bot-server-4c57.onrender.com';
+  const API = 'https://aim-pay-bot-server.onrender.com';
 
   function getParam(name){ const u = new URL(window.location.href); return u.searchParams.get(name); }
   async function fetchText(url){ const r = await fetch(url); if(!r.ok) throw new Error('HTTP '+r.status); return await r.text(); }

@@ -1,11 +1,11 @@
 (function(){
-  const API = 'https://aim-pay-bot-server-4c57.onrender.com';
+  const API = 'https://aim-pay-bot-server.onrender.com';
   function getParam(name){ const u = new URL(window.location.href); return u.searchParams.get(name); }
   async function fetchJson(url, opts){ const r = await fetch(url, opts); if(!r.ok) throw new Error('HTTP '+r.status); return await r.json(); }
   // Старая функция renderStep удалена, используем функцию renderStep ниже (239-338)
 })();
 
-const API_BASE = 'https://aim-pay-bot-server-4c57.onrender.com';
+const API_BASE = 'https://aim-pay-bot-server.onrender.com';
 
 function getLeadId() {
   const url = new URL(window.location.href);

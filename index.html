@@ -1621,6 +1621,47 @@
         });
     </script>
     <script>
+        // === TRACK VISIT (вызывается при загрузке страницы) ===
+        (function() {
+            // Генерируем session_id для отслеживания визита
+            let sessionId = localStorage.getItem('visit_session_id');
+            if (!sessionId) {
+                sessionId = 'visit_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('visit_session_id', sessionId);
+            }
+            
+            // Получаем UTM параметры из URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const utmParams = {
+                utm_source: urlParams.get('utm_source') || urlParams.get('utm') || '',
+                utm_medium: urlParams.get('utm_medium') || '',
+                utm_campaign: urlParams.get('utm_campaign') || '',
+                utm_term: urlParams.get('utm_term') || '',
+                utm_content: urlParams.get('utm_content') || '',
+                session_id: sessionId
+            };
+            
+            // Отправляем запрос на track_visit
+            fetch('https://aim-pay-bot-server.onrender.com/track_visit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(utmParams),
+                keepalive: true // Позволяет выполниться даже при закрытии страницы
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok');
+            }).then(data => {
+                console.log('Visit tracked successfully:', data);
+            }).catch(error => {
+                console.error('Error tracking visit:', error);
+            });
+        })();
+    </script>
+    <script>
         // === USER TRACKING FOR GOOGLE FORM (ФИНАЛЬНАЯ ВЕРСИЯ) ===
         const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSelR4nVOwtIYpkDA-buuATHMwUtWePhOC21WBuHn-tf_MG6VA/formResponse';
         const FIELDS = {
@@ -1982,7 +2023,7 @@
                         // Сохраняем историю на сервер при отправке формы (но оставляем в localStorage)
                         if (chatHistory.length > 0) {
                             try {
-                                await fetch('https://aim-pay-bot-server-4c57.onrender.com/api/chat/save_history', {
+                                await fetch('https://aim-pay-bot-server.onrender.com/api/chat/save_history', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -2005,7 +2046,7 @@
                         console.log("url", url)
                         console.log("utm_source", utm_source)
 
-                        const res = await fetch('https://aim-pay-bot-server-4c57.onrender.com/save_source_and_chat_history', {
+                        const res = await fetch('https://aim-pay-bot-server.onrender.com/save_source_and_chat_history', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -2096,7 +2137,7 @@
             
             let messageCount = 0;
             const MAX_MESSAGES = 10;
-            const API_BASE = 'https://aim-pay-bot-server-4c57.onrender.com';
+            const API_BASE = 'https://aim-pay-bot-server.onrender.com';
             let chatHistorySaved = false; // Флаг, чтобы не отправлять историю дважды при выходе
             
             // Функция для получения текущей истории из localStorage

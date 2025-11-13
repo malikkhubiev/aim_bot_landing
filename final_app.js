@@ -1,4 +1,4 @@
-const API_BASE = 'https://aim-pay-bot-server-4c57.onrender.com';
+const API_BASE = 'https://aim-pay-bot-server.onrender.com';
 
 function getLeadId() {
   const url = new URL(window.location.href);

@@ -6,7 +6,7 @@
 
 (function(){
   const GLOBAL = (typeof window !== 'undefined') ? window : globalThis;
-  const API = 'https://aim-pay-bot-server-4c57.onrender.com';
+  const API = 'https://aim-pay-bot-server.onrender.com';
 
   const STORAGE_KEY = 'aim_quest_progress';
   const CONTEXT_KEY = 'aim_quest_context';
