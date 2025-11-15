@@ -429,13 +429,13 @@
         .countdown-timer {
             font-family: 'Courier New', monospace;
             font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            text-shadow: 0 0 10px #fff;
             animation: countdownPulse 0.5s ease-in-out infinite alternate;
         }
 
         @keyframes countdownPulse {
             0% { transform: scale(1); }
-            100% { transform: scale(1.25); }
+            100% { transform: scale(1.5); }
         }
 
         .countdown-red {
@@ -444,7 +444,7 @@
         }
 
         .countdown-urgent {
-            background: linear-gradient(45deg, #ff0000, #ff4444);
+            background: #fff;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -943,6 +943,15 @@
             background: #21c063;
             border-radius: 15px;
         }
+
+        .anim{
+            animation: countdownPulsing 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes countdownPulsing {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
     </style>
 </head>
 
@@ -981,7 +990,7 @@
     <section class="pt-28 pb-20 px-6">
         <div class="container mx-auto flex flex-col md:flex-row items-center">
             <div class="md:w-1/2 mb-10 md:mb-0">
-                <div class="crypto-chip mb-4 text-xl start_mk">🔥 Начни учиться прямо сейчас бесплатно</div>
+                <div class="crypto-chip mb-4 text-xl start_mk">💎 Начни прямо сейчас!</div>
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
                     <span class="crypto-text">Машинное обучение</span> без математики
                 </h1>
@@ -989,9 +998,9 @@
                     <span style="color: #21c063;">Ты построишь</span> свою первую модель <span style="color: #21c063;">с нуля</span> уже <span style="color: #21c063;">ЧЕРЕЗ НЕСКОЛЬКО ЧАСОВ</span><br>
                 </p>
                 <div class="mb-8">
-                    <div class="hidden md:block mb-4">
-                        <div class="crypto-timer text-center">
-                            <div class="text-red-400 font-bold text-2xl mb-2">🔥 Успей до 22 ноября 🔥</div>
+                    <div class="mb-4">
+                        <div class="crypto-timer text-center" style="width: 100%">
+                            <div class="font-bold text-md mb-2 anim" style="color: #21c063;">💎 До 22 ноября 💎</div>
                             <div id="countdown-hero" class="text-white text-2xl font-mono"></div>
                         </div>
                     </div>
@@ -1355,8 +1364,8 @@
 
             <div class="max-w-md mx-auto grid items-center md:grid-cols-1">
                 <div class="crypto-timer text-center">
-                    <div class="text-red-400 font-bold text-2xl mb-2">🔥<br>Ворвись РАНЬШЕ, забери БОЛЬШЕ<br>🔥</div>
-                    <div id="countdown-price" class="text-white text-2xl font-mono"></div>
+                    <div class="font-bold text-2xl mb-2 anim" style="color: #21c063;">💎<br>Ворвись РАНЬШЕ, забери БОЛЬШЕ<br>💎</div>
+                    <div id="countdown-price" class="text-white text-2xl font-mono" style="color: white;"></div>
                 </div>
             </div>
 
