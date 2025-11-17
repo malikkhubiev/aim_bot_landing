@@ -12,9 +12,6 @@
   <a href="https://t.me/AiM_Pay_Bot?start=me" target="_blank">
     <img src="https://img.shields.io/badge/Telegram%20Bot-Start%20Lead-5A36C0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram bot" />
   </a>
-  <a href="./spec.md">
-    <img src="https://img.shields.io/badge/Tracking%20Spec-json-0a0a1a?style=for-the-badge&logo=json&logoColor=white" alt="Tracking spec" />
-  </a>
 </p>
 
 <p align="center">
@@ -37,8 +34,6 @@
 5. [Телеметрия и аналитика](#телеметрия-и-аналитика)
 6. [Lighthouse и SEO](#lighthouse-и-seo)
 7. [Структура проекта](#структура-проекта)
-8. [Локальный запуск](#локальный-запуск)
-9. [Roadmap идей](#roadmap-идей)
 
 ## Продукт и сценарий
 AiM Bot Landing — это не просто лендинг. Это full-funnel прогрев, который переводит холодный трафик из рекламы к оплате через Telegram-бота. В основе — триггерная история «инженер ML на Уолл-стрит» с понятным CTA и постоянным сбором данных о поведении пользователя.
