@@ -67,7 +67,7 @@
         <!-- Top.Mail.Ru counter -->
         <script type="text/javascript">
             var _tmr = window._tmr || (window._tmr = []);
-            window.TOP_MAIL_RU_ID = '3718551';
+            window.TOP_MAIL_RU_ID = 3718551; // ID счетчика Top.Mail.Ru
             (function (d, w, id) {
                 if (d.getElementById(id)) return;
                 var ts = d.createElement("script"); ts.type = "text/javascript"; ts.async = true; ts.id = id;
@@ -77,12 +77,20 @@
             })(document, window, "tmr-code");
             
             // Функция для хэширования строки через SHA256
+            // Принимает строку, приводит к нижнему регистру, удаляет пробелы и хэширует
             async function hashSHA256(str) {
-                if (!str) return '';
-                const msgBuffer = new TextEncoder().encode(str.toLowerCase().trim());
-                const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                return hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
+                if (!str || typeof str !== 'string') return '';
+                try {
+                    const normalizedStr = str.toLowerCase().trim();
+                    if (!normalizedStr) return '';
+                    const msgBuffer = new TextEncoder().encode(normalizedStr);
+                    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+                    const hashArray = Array.from(new Uint8Array(hashBuffer));
+                    return hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
+                } catch (error) {
+                    console.error('Error hashing string:', error);
+                    return '';
+                }
             }
             
             // Сохраняем функцию хэширования в глобальной области видимости
@@ -2102,29 +2110,42 @@
                             markFormSubmitted(email, normalized);
                             
                             // Отправляем событие в Top.Mail.Ru (VK пиксель) с хэшированными данными
-                            if (window._tmr && window.hashSHA256) {
+                            if (window._tmr && Array.isArray(window._tmr) && window.hashSHA256) {
                                 try {
                                     // Хэшируем email, phone и name через SHA256
                                     const hashedEmail = await window.hashSHA256(email);
                                     const hashedPhone = await window.hashSHA256(normalized);
                                     const hashedName = await window.hashSHA256(name);
                                     
-                                    // Формируем pid с хэшированными данными
-                                    // Формат: email_sha256|phone_sha256|name_sha256
-                                    const pid = `${hashedEmail}|${hashedPhone}|${hashedName}`;
-                                    
-                                    // Отправляем событие согласно инструкции Top.Mail.Ru
-                                    window._tmr.push({
-                                        type: 'reachGoal',
-                                        id: parseInt(window.TOP_MAIL_RU_ID) || 3718551,
-                                        goal: 'lead',
-                                        pid: pid
-                                    });
-                                    
-                                    console.log("Top.Mail.Ru event sent with hashed data:", { hashedEmail, hashedPhone, hashedName });
+                                    // Проверяем, что все данные успешно захешированы
+                                    if (hashedEmail && hashedPhone && hashedName) {
+                                        // Формируем pid с хэшированными данными
+                                        // Формат: email_sha256|phone_sha256|name_sha256
+                                        const pid = `${hashedEmail}|${hashedPhone}|${hashedName}`;
+                                        
+                                        // Отправляем событие согласно инструкции Top.Mail.Ru
+                                        // Формат: { type: 'reachGoal', id: 3718551, goal: 'lead', pid: '...' }
+                                        window._tmr.push({
+                                            type: 'reachGoal',
+                                            id: window.TOP_MAIL_RU_ID || 3718551,
+                                            goal: 'lead',
+                                            pid: pid
+                                        });
+                                        
+                                        console.log("Top.Mail.Ru event sent successfully with hashed data:", {
+                                            goal: 'lead',
+                                            hashedEmail: hashedEmail.substring(0, 16) + '...',
+                                            hashedPhone: hashedPhone.substring(0, 16) + '...',
+                                            hashedName: hashedName.substring(0, 16) + '...'
+                                        });
+                                    } else {
+                                        console.warn('Top.Mail.Ru: Some data failed to hash, skipping event');
+                                    }
                                 } catch (e) {
                                     console.error('Top.Mail.Ru error:', e);
                                 }
+                            } else {
+                                console.warn('Top.Mail.Ru: Counter not initialized or hash function not available');
                             }
                             
                             // Отправляем цель в Яндекс Метрику (зависит от METRICS_GOAL)
