@@ -12,9 +12,6 @@
   <a href="https://t.me/AiM_Pay_Bot?start=me" target="_blank">
     <img src="https://img.shields.io/badge/Telegram%20Bot-Start%20Lead-5A36C0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram bot" />
   </a>
-  <a href="./spec.md">
-    <img src="https://img.shields.io/badge/Tracking%20Spec-json-0a0a1a?style=for-the-badge&logo=json&logoColor=white" alt="Tracking spec" />
-  </a>
 </p>
 
 <p align="center">
