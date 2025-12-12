@@ -934,7 +934,7 @@
             }
             .grassy{
                 margin-top: 20px;
-                font-size: 20px !important;
+                font-size: 17px !important;
             }
         }
         * {
@@ -1000,11 +1000,11 @@
             <div class="hidden md:flex space-x-6">
                 <a href="#about" class="text-white hover:crypto-text transition">О курсе</a>
                 <a href="#program" class="text-white hover:crypto-text transition">Программа</a>
-                <a href="#price" class="text-white hover:crypto-text transition">Цена</a>
+                <a href="#price" class="text-white hover:crypto-text transition">Выгода</a>
                 <a href="#faq" class="text-white hover:crypto-text transition">Ответы на вопросы</a>
             </div>
             <div class="flex items-center space-x-4">
-                <button onclick="openDemoModal()" class="crypto-btn px-6 py-2 rounded-full text-sm" title="Курс ML — Начать бесплатно">Начать бесплатно</button>
+                <a href="quest.html" class="crypto-btn px-6 py-2 rounded-full text-sm" title="Курс ML — Начать бесплатно">Начать бесплатно</a>
                 <button class="md:hidden text-white text-2xl" id="menuBtn">
                     <i class="fas fa-bars" aria-hidden="true"></i>
                 </button>
@@ -1026,10 +1026,10 @@
             <div class="md:w-1/2 mb-10 md:mb-0">
                 <div class="crypto-chip mb-4 text-xl start_mk">💎 Начни прямо сейчас!</div>
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-                    <span class="crypto-text">Машинное обучение</span> без математики
+                    <span class="crypto-text">Машинное обучение</span> с нуля без математики
                 </h1>
                 <p class="text-xl text-gray-300 mb-8">
-                    <span style="color: #21c063;">Ты построишь</span> свою первую модель <span style="color: #21c063;">с нуля</span> уже <span style="color: #21c063;">ЧЕРЕЗ НЕСКОЛЬКО ЧАСОВ</span><br>
+                    <span style="color: #21c063;">Ты построишь</span> свою первую модель <span style="color: #21c063;"></span> уже <span style="color: #21c063;">ЧЕРЕЗ НЕСКОЛЬКО ЧАСОВ</span><br>
                 </p>
                 <div class="mb-8">
                     <div class="mb-4">
@@ -1040,17 +1040,17 @@
                     </div>
                 </div>
                 <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                    <button onclick="openDemoModal()" class="crypto-btn px-8 py-4 rounded-full text-md crypto-pulse text-center">
+                    <a href="quest.html" class="crypto-btn px-8 py-4 rounded-full text-md crypto-pulse text-center">
                         Начать бесплатно
-                    </button>
+                    </a>
                     <a href="#program"
                         class="px-8 py-4 rounded-full text-md border crypto-border text-white hover:bg-gray-800 transition text-center" title="Программа курса ML">
                         Программа курса
                     </a>
-                    <button onclick="openDemoModal()"
+                    <a href="quest.html"
                         class="rounded-full text-md text-black bg-white demoy" title="Демо курса Машинного обучения">
                         &#9658; Демо курса
-                    </button>
+                    </a>
                 </div>
             </div>
             <div class="md:w-1/2 flex justify-center">
@@ -1058,28 +1058,24 @@
                     <div class="absolute -top-4 -right-4 font-bold px-3 py-1 rounded-full text-xl aim">
                         КУРС С СЕРТИФИКАТОМ
                     </div>
-                    <span>🚀 ML для буста hard skills</span>
-                    <h3 class="text-xl font-bold text-white mb-4 mt-4">Машинное обучение С НУЛЯ</h3>
+                    <span>🚀 Жми и врывайся!</span>
+                    <h3 class="text-xl font-bold text-white mb-4 mt-4">Начни свой путь в ML</h3>
                     <div class="flex flex-wrap gap-2 mb-4">
                         <span class="crypto-chip">Python</span>
                         <span class="crypto-chip">Scikit-learn</span>
                         <span class="crypto-chip">Keras-нейросети</span>
-                        <span class="crypto-chip">ML-задачи</span>
                         <span class="crypto-chip">Data Science</span>
-                        <span class="crypto-chip">Пайплайны</span>
-                        <span class="crypto-chip">Метрики</span>
                         <span class="crypto-chip">Гиперпараметры</span>
-                        <span class="crypto-chip">Валидация</span>
+                        <span class="crypto-chip">Метрики</span>
                     </div>
-                    <div class="flex items-center text-yellow-400 mb-2">
-                        <span class="text-white text-sm">+ Дополнительные материалы и датасеты</span>
+                    <div class="text-yellow-400 mb-2">
+                        <span class="text-white text-sm">+ Тест на мышление инженера ML</span><br>
+                        <span class="text-white text-sm">+ Чек-лист Wall Street</span><br>
+                        <span class="text-white text-sm">+ Пет-проект Mercedes Benz</span><br>
                     </div>
                     <div class="inside_b">
-                        <div class="text-white">
-                            + Практика для крепких навыков
-                        </div>
                         <div class="text-green-400 grassy">
-                            <i class="fas fa-check-circle mr-1" alt="Checkmark"></i>Доступ через Telegram
+                            <i class="fas fa-check-circle mr-1" alt="Checkmark"></i>🎁Забирай подарки🎁
                         </div>
                     </div>
                 </div>
@@ -1090,13 +1086,9 @@
     <!-- О курсе -->
     <section id="about" class="py-16 px-6 bg-gray-900">
         <div class="container mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-2xl md:text-4xl font-bold text-white mb-4">Машинное обучение <span class="crypto-text">С НУЛЯ</span> на Python <span
+            <div class="text-center">
+                <h2 class="text-2xl md:text-4xl font-bold text-white mb-4"><span class="crypto-text">С НУЛЯ</span> машинное обучение <span
                         class="crypto-text">БЕЗ МАТЕМАТИКИ</span></h2><br>
-                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
-                    Уже сегодня ты напишешь, натренируешь и проверишь в действии свою первую модель.<br><br>
-                    Научишься обрабатывать и визуализировать данные. Натренируешь Keras-нейросети.
-                </p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
@@ -1126,7 +1118,7 @@
                     </div>
                     <h3 class="text-xl font-bold text-white mb-3">Курс для абсолютных новичков</h3>
                     <p class="text-gray-300">
-                        Не надо уметь кодить. Мы дадим тебе базу и доп. материалы
+                        Не надо уметь кодить. Мы дадим тебе базу и дополнительные материалы
                     </p>
                 </div>
             </div>
@@ -1137,8 +1129,7 @@
     <section id="program" class="py-16 bg-gray-900 aim-px">
         <div class="container mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-2xl md:text-4xl font-bold text-white mb-4 biggy">Программа курса по <span
-                    class="crypto-text">машинному обучению</span> на Python</h2>
+                <h2 class="text-2xl md:text-4xl font-bold text-white mb-4 biggy">Программа обучения</h2>
                 <p class="text-xxl whitee" style="text-align: left;">
                     <span class="boldy">12</span> модулей: <br>
                     <span class="boldy">2</span> - основные [ Scikit-learn и Keras ] <br> <span class="boldy">7</span> - вспомогательные <br> <span class="boldy">3</span> - минимум для общего развития
@@ -1385,15 +1376,15 @@
     <section id="price" class="py-16 px-6 bg-gray-900">
         <div class="container mx-auto maxwidth">
             <div class="text-center mb-16">
-                <h2 class="text-5xl md:text-4xl font-bold mb-4 makesmall" style="text-transform: uppercase; font-size: 50px; line-height: 60px;">
+                <h2 class="text-6xl text-white md:text-4xl font-bold mb-4 makesmall" style="text-transform: uppercase; font-size: 50px; line-height: 60px;">
                     <span class="crypto-text">AiM</span> - курс по машинному обучению <span class="crypto-text">без переплат</span>
                 </h2><br>
-                <p class="text-2xl md:text-4xl font-bold text-white mb-4 makesmaller">
+                <p class="text-2xl md:text-2xl font-bold text-white mb-4 makesmaller">
                     Хочешь <span class="crypto-text">полистать</span> лекции,<br>собрать <span class="crypto-text">fake</span> портфолио<br>и <span class="crypto-text">выскочить</span> на работу?<br>
                     Это <span class="crypto-text">не сюда.</span><br>
                     Мы учим <span class="crypto-text">понимать методы</span> и <span class="crypto-text">строить модели</span>.<br>
                 </p><br>
-                <span class="text-2xl md:text-4xl font-bold text-black videlit">AiM — твой <span class="crypto-text">старт</span> в <span class="crypto-text">реальный ML</span>.</span>
+                <span class="text-2xl md:text-3xl font-bold text-black videlit">AiM — твой <span class="crypto-text">старт</span> в <span class="crypto-text">реальный ML</span>.</span>
             </div>
 
             <div class="max-w-md mx-auto grid items-center md:grid-cols-1">
@@ -1406,10 +1397,6 @@
             <div class="max-w-md mx-auto grid items-center md:grid-cols-1">
                 <div class="crypto-card p-8 text-center">
                     <h3 class="text-2xl font-bold text-white mb-4">Машинное обучение с нуля + сертификат</h3>
-                    <div class="mb-6">
-                        <span class="text-4xl font-bold crypto-text">14 990₽</span>
-                        <span class="text-xl line-through text-gray-400 ml-2">25 990₽</span>
-                    </div>
                     <ul class="space-y-3 mb-8 text-left">
                         <li class="flex items-center">
                             <i class="fas fa-check-circle text-green-400 mr-2" alt="Checkmark"></i>
@@ -1424,10 +1411,10 @@
                             <span>Scikit-learn и Keras без лишней теории</span>
                         </li>
                     </ul>
-                    <button onclick="openDemoModal()"
-                        class="crypto-btn px-8 py-3 rounded-full text-lg w-full button_mk" title="Оплатить курс ML через Telegram">
+                    <a href="quest.html"
+                        class="crypto-btn px-8 py-3 rounded-full text-lg w-full button_mk text-center" title="Оплатить курс ML через Telegram">
                         <i class="fas fa-shopping-cart mr-2" aria-hidden="true"></i> Начать бесплатно
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -1438,7 +1425,7 @@
         <div class="container mx-auto text-center">
             <p class="text-4xl text-black max-w-3xl mx-auto mb-16"> БОИШЬСЯ РИСКОВАТЬ?</p>
             <p class="text-2xl text-black max-w-3xl mx-auto mb-16 font-bold">Наш курс - это способ <span class="crypto-text">ПРИНЕСТИ ПОЛЬЗУ</span>, поэтому 150+ видео из курса мы выложили <span class="crypto-text">СОВЕРШЕННО БЕСПЛАТНО</span>. Открой "Демо курса" и убедись в огромной пользе <span class="crypto-text">ПЕРЕД ПОКУПКОЙ!</span></p>
-            <button onclick="openDemoModal()" class="blacky" title="Демо материалов курса ML"> &#9658; Демо курса </button>
+            <a href="quest.html" class="blacky" title="Демо материалов курса ML" style="text-decoration: none; display: inline-block;"> &#9658; Демо курса </a>
         </div>
     </section>
 
@@ -1521,9 +1508,9 @@
                     <div id="countdown-cta" class="text-red-700 text-2xl font-mono font-bold"></div>
                 </div>
             </div>
-            <button onclick="openDemoModal()" class="crypto-btn px-8 py-4 rounded-full text-lg inline-block crypto-pulse" title="Курс по машинному обучению — начать">
+            <a href="quest.html" class="crypto-btn px-8 py-4 rounded-full text-lg inline-block crypto-pulse" title="Курс по машинному обучению — начать">
                 <i class="fas fa-rocket mr-2" aria-hidden="true"></i> Начать бесплатно
-            </button>
+            </a>
         </div>
     </section>
 
@@ -1547,7 +1534,7 @@
                     <ul class="space-y-2">
                         <li><a href="#about" class="text-gray-400 hover:crypto-text transition">О курсе</a></li>
                         <li><a href="#program" class="text-gray-400 hover:crypto-text transition">Программа</a></li>
-                        <li><a href="#price" class="text-gray-400 hover:crypto-text transition">Цена</a></li>
+                        <li><a href="#price" class="text-gray-400 hover:crypto-text transition">Выгода</a></li>
                         <li><a href="#faq" class="text-gray-400 hover:crypto-text transition">Ответы на вопросы</a></li>
                     </ul>
                 </div>

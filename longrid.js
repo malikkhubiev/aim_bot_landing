@@ -228,19 +228,8 @@
     }
   }
 
-  async function loadLead(leadId){
-    console.log(`[longrid.js] Loading lead: ${leadId}`);
-    if (!leadId) {
-      console.log('[longrid.js] No leadId provided');
-      return { name: '' };
-    }
-    try{
-      const resp = await fetchJson(`${API}/form_warm/clients/${leadId}`);
-      console.log(`[longrid.js] Lead loaded:`, resp);
-      if (resp.status==='success') return resp.lead || { name:'' };
-    }catch(e){ 
-      console.error('[longrid.js] Error loading lead:', e);
-    }
+  async function loadLead(){
+    console.log('[longrid.js] No lead loading needed');
     return { name: '' };
   }
 
@@ -252,11 +241,8 @@
 
   window.addEventListener('DOMContentLoaded', async () => {
     console.log('[longrid.js] DOMContentLoaded, initializing longrid');
-    const leadId = getParam('lead_id');
-    console.log(`[longrid.js] leadId from URL: ${leadId}`);
-    if (leadId) window.AimQuestState.setLeadContext({ leadId });
-
-    const lead = await loadLead(leadId);
+    
+    const lead = { name: '' };
     console.log(`[longrid.js] Lead data:`, lead);
     updateLeadBanner(lead);
 
@@ -311,7 +297,7 @@
         if (host.querySelector('.card h2') && host.querySelector('.card h2').textContent.includes('Поздравляем')) {
           // Already showing completion screen, navigate to final
           await window.AimQuestState.saveProgress({ stage:'longrid', stepKey:'completed', stepIndex: currentIndex, answer:'done', meta:null });
-          const url = window.AimQuestState.buildUrl('final.html', leadId ? { lead_id: leadId } : {});
+          const url = window.AimQuestState.buildUrl('final.html', {});
           window.location.href = url;
         } else {
           // Show completion screen

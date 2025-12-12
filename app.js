@@ -13,60 +13,23 @@ function getLeadId() {
 }
 
 async function sendProgress(step, answer) {
-  const leadId = getLeadId();
-  if (!leadId) return; // тихо выходим, если не знаем лида
+  // Упрощенная версия - сохраняем только в localStorage, лид создается при отправке email
   try {
-    // Определяем step_index из step
-    let stepIndex = null;
-    let stepKey = step;
-    // Если step - это число (1-10), используем его как step_index
-    if (typeof step === 'number' || /^\d+$/.test(step)) {
-      stepIndex = parseInt(step) - 1; // step_index начинается с 0
-      stepKey = step.toString();
-    } else if (step.includes(':')) {
-      // Если step в формате "7: Интерес к ML", извлекаем число
-      const match = step.match(/^(\d+):/);
-      if (match) {
-        stepIndex = parseInt(match[1]) - 1;
-        stepKey = match[1];
-      }
-    }
-    
-    const response = await fetch(`${API_BASE}/form_warm/clients/${leadId}/progress`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        stage: 'quiz',
-        step: stepKey,
-        step_index: stepIndex,
-        answer: answer 
-      })
-    });
-    // Если ответ уже существует, обновляем его
-    if (!response.ok && response.status !== 200) {
-      await fetch(`${API_BASE}/form_warm/clients/${leadId}/answers`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ step: stepKey, answer })
-      });
-    }
+    const saved = JSON.parse(localStorage.getItem('quiz_answers') || '{}');
+    saved[step] = answer;
+    localStorage.setItem('quiz_answers', JSON.stringify(saved));
   } catch (_) {}
 }
 
-// Загружаем сохраненные ответы
+// Загружаем сохраненные ответы из localStorage
 let savedAnswers = {};
-async function loadSavedAnswers() {
-  const leadId = getLeadId();
-  if (!leadId) return;
+function loadSavedAnswers() {
   try {
-    const resp = await fetch(`${API_BASE}/form_warm/clients/${leadId}/progress`);
-    const data = await resp.json();
-    if (data.status === 'success' && data.progress) {
-      data.progress.forEach(p => {
-        savedAnswers[p.step] = p.answer;
-      });
-    }
-  } catch (_) {}
+    const saved = JSON.parse(localStorage.getItem('quiz_answers') || '{}');
+    savedAnswers = saved;
+  } catch (_) {
+    savedAnswers = {};
+  }
 }
 
 const quizData = [
@@ -108,23 +71,8 @@ const quizData = [
   },
   {
     type: 'choice',
-    title: '7. Оцените ваш интерес к ML (1–10)',
+    title: '7. Насколько по 10-балльной шкале первое знакомство было сложным?',
     options: Array.from({ length: 10 }, (_, i) => String(i + 1))
-  },
-  {
-    type: 'choice',
-    title: '8. Насколько готовы изучать ML (1–10)',
-    options: Array.from({ length: 10 }, (_, i) => String(i + 1))
-  },
-  {
-    type: 'choice',
-    title: '9. Умеете пользоваться Телеграмом?',
-    options: ['Нет ❌', 'Да ✅']
-  },
-  {
-    type: 'choice',
-    title: '10. Решение о курсе',
-    options: [ 'Хочу изучить программу подробнее 📖', 'Хочу купить курс сейчас 💖']
   }
 ];
 
@@ -144,16 +92,12 @@ function renderStep(container, stepIndex, onDone) {
     p.style.margin = '20px 0';
     p.style.lineHeight = '1.6';
     
-    const leadId = getLeadId();
     const btn = document.createElement('button');
     btn.className = 'right';
     btn.textContent = 'Перейти к чек-листу Уолл-стрит 🐺';
     btn.style.marginTop = '20px';
     btn.addEventListener('click', async () => {
-      const url = window.AimQuestState ? 
-        window.AimQuestState.buildUrl('longrid.html', leadId ? { lead_id: leadId } : {}) :
-        `longrid.html${leadId ? '?lead_id=' + leadId : ''}`;
-      window.location.href = url;
+      window.location.href = 'longrid.html';
     });
     
     done.appendChild(h);
@@ -239,9 +183,9 @@ function renderStep(container, stepIndex, onDone) {
   container.appendChild(wrap);
 }
 
-(async function init() {
+(function init() {
   console.log('[app.js] Initializing quiz application');
-  await loadSavedAnswers();
+  loadSavedAnswers();
   const root = document.getElementById('quiz');
   if (!root) {
     console.error('[app.js] Quiz container not found!');

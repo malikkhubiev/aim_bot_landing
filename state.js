@@ -66,7 +66,7 @@
   async function saveProgress({ stage, stepKey, stepIndex, answer, meta }){
     const ctx = getContext();
     const createdAt = nowIso();
-    const isSandbox = !ctx.leadId || String(ctx.leadId).trim() === '' || (new URL(window.location.href).searchParams.get('sandbox') === '1');
+    const isSandbox = !ctx || !ctx.leadId || String(ctx.leadId).trim() === '' || (new URL(window.location.href).searchParams.get('sandbox') === '1');
     const entry = {
       stage,           // 'quiz' | 'longrid' | 'final'
       step: stepKey,   // string identifier
@@ -111,9 +111,9 @@
 
   async function getServerProgress(){
     const ctx = getContext();
-    const isSandbox = !ctx.leadId || String(ctx.leadId).trim() === '' || (new URL(window.location.href).searchParams.get('sandbox') === '1');
+    const isSandbox = !ctx || !ctx.leadId || String(ctx.leadId).trim() === '' || (new URL(window.location.href).searchParams.get('sandbox') === '1');
     if (isSandbox) return [];
-    if (!ctx.leadId) return [];
+    if (!ctx || !ctx.leadId) return [];
     try {
       const resp = await fetchJson(`${API}/form_warm/clients/${ctx.leadId}/progress`);
       return Array.isArray(resp.progress) ? resp.progress : [];
@@ -133,7 +133,7 @@
   function resolveRouteFromProgress(progress){
     if (!progress) return { page: 'index.html', params: {} };
     const ctx = getContext();
-    const leadParam = ctx.leadId ? { lead_id: ctx.leadId } : {};
+    const leadParam = (ctx && ctx.leadId) ? { lead_id: ctx.leadId } : {};
     // Priority by stage: final > longrid > quiz
     const stage = progress.stage;
     const step = progress.step;

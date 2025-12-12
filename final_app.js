@@ -6,55 +6,23 @@ function getLeadId() {
 }
 
 async function sendProgress(step, answer) {
-  const leadId = getLeadId();
-  if (!leadId) return;
+  // Упрощенная версия - сохраняем только в localStorage
   try {
-    // Определяем step_index из step (final_q1 -> 0, final_q2 -> 1, final_q3 -> 2)
-    let stepIndex = null;
-    let stepKey = step;
-    if (step.startsWith('final_q')) {
-      const match = step.match(/final_q(\d+)/);
-      if (match) {
-        stepIndex = parseInt(match[1]) - 1; // step_index начинается с 0
-        stepKey = step;
-      }
-    }
-    
-    const response = await fetch(`${API_BASE}/form_warm/clients/${leadId}/progress`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        stage: 'final',
-        step: stepKey,
-        step_index: stepIndex,
-        answer: typeof answer === 'object' ? JSON.stringify(answer) : answer 
-      })
-    });
-    // Если ответ уже существует, обновляем его
-    if (!response.ok && response.status !== 200) {
-      await fetch(`${API_BASE}/form_warm/clients/${leadId}/answers`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ step: stepKey, answer: typeof answer === 'object' ? JSON.stringify(answer) : answer })
-      });
-    }
+    const saved = JSON.parse(localStorage.getItem('final_answers') || '{}');
+    saved[step] = answer;
+    localStorage.setItem('final_answers', JSON.stringify(saved));
   } catch (_) {}
 }
 
-// Загружаем сохраненные ответы
+// Загружаем сохраненные ответы из localStorage
 let savedAnswers = {};
-async function loadSavedAnswers() {
-  const leadId = getLeadId();
-  if (!leadId) return;
+function loadSavedAnswers() {
   try {
-    const resp = await fetch(`${API_BASE}/form_warm/clients/${leadId}/progress`);
-    const data = await resp.json();
-    if (data.status === 'success' && data.progress) {
-      data.progress.forEach(p => {
-        savedAnswers[p.step] = p.answer;
-      });
-    }
-  } catch (_) {}
+    const saved = JSON.parse(localStorage.getItem('final_answers') || '{}');
+    savedAnswers = saved;
+  } catch (_) {
+    savedAnswers = {};
+  }
 }
 
 const quizData = [
@@ -138,10 +106,6 @@ function getVerdict(score) {
         <p><strong>Почему курс тебе подходит:</strong><br><b>Курс — это ключ к миру, который ты хочешь понять.</b> Ты будешь не «проходить» уроки, а погружаться в них, задавать вопросы и получать удовольствие от того, как складывается общая картина.<br><br><b>Ты — не просто студент. Ты — наша мечта 🔥!</b>
 Такого горения и любознательности не купить за деньги.<br>Это очень ценно 💎!<br>
 Добро пожаловать домой 💖!<br>Начнем строить фундамент твоего профессионализма в ML?!</p>
-<p style="text-align: center;">Так как ты блестяще справился 🔥, мы дарим тебе пробный урок 🎁, в котором ты с нуля построишь реальную модель и выложишь в интернет 🚀</p>
-<div class="poehali">
-<a class="ehali" href="https://rutube.ru/video/38f060a4dec7c665cb1312a3fb57596c/">🔥 Поехали</a>
-</div>
 `
     };
   } else if (score >= 5 && score <= 6) {
@@ -153,10 +117,6 @@ function getVerdict(score) {
         <p><strong>Почему тебе нужно подумать:</strong> Главный вызов — не сдаться в «долине разочарования» 🏜️, которая часто бывает в середине обучения.<br>Когда эйфория прошла, а до финиша еще далеко 🏁.<br><br>Помни: ML — это как качать мышцы 💪.<br>Сначала трудно, но с каждой неделей ты становишься сильнее 🧠.<br>
         Если готов перейти от «хочу» к «делаю», Твой прагматизм + Наша система = рабочий результат 🔥<br><br>
         Готов ли ты пройти этот путь даже когда будет неинтересно?<br>Если да — добро пожаловать в команду! 🚀</p>
-        <p style="text-align: center;">Давай проверим: мы дарим тебе пробный урок 🎁, в котором ты с нуля построишь реальную модель и выложишь в интернет 🚀</p>
-        <div class="poehali">
-        <a class="ehali" href="https://rutube.ru/video/38f060a4dec7c665cb1312a3fb57596c/">🔥 Поехали</a>
-        </div>
         `
     };
   } else {
@@ -194,30 +154,17 @@ function renderStep(container, stepIndex, answers, onDone) {
       <div class="verdict-content">
         ${verdict.content}
       </div>
-      <div class="answers" style="margin-top: 20px;">
-        <button id="buyFull" class="right">Купить полную версию</button>
-      </div>
     `;
     container.appendChild(done);
     // Отправляем итоговый результат
     sendProgress('final_score', score.toString());
     sendProgress('final_verdict', verdict.title);
     
-    // Добавляем обработчик для кнопки "Купить полную версию"
-    const buyBtn = document.getElementById('buyFull');
-    if (buyBtn) {
-      buyBtn.addEventListener('click', () => {
-        // Отправляем цель go_to_bot в Яндекс Метрику
-        if (window.ym && typeof window.ym === 'function') {
-          try {
-            window.ym(window.YANDEX_METRIKA_ID, 'reachGoal', 'go_to_bot');
-          } catch (e) {
-            console.error('Yandex Metrika error:', e);
-          }
-        }
-        window.location.href = 'https://t.me/AiM_Pay_Bot?start=me';
-      });
-    }
+    // Показываем форму email после вердикта
+    setTimeout(() => {
+      showEmailForm(container);
+    }, 1000);
+    
     return;
   }
 
@@ -277,8 +224,8 @@ function renderStep(container, stepIndex, answers, onDone) {
   container.appendChild(wrap);
 }
 
-(async function init() {
-  await loadSavedAnswers();
+(function init() {
+  loadSavedAnswers();
   const root = document.getElementById('quiz');
   let step = 0;
   const answers = [];
@@ -297,5 +244,119 @@ function renderStep(container, stepIndex, answers, onDone) {
   };
   renderStep(root, step, answers, next);
 })();
+
+function showEmailForm(container) {
+  const emailForm = document.createElement('div');
+  emailForm.className = 'verdict';
+  emailForm.style.marginTop = '40px';
+  emailForm.innerHTML = `
+    <h3 style="text-align: center; margin-bottom: 20px;">Напиши свой email и построишь первый проект совершенно бесплатно</h3>
+    <form id="emailForm" style="display: flex; flex-direction: column; gap: 15px; max-width: 500px; margin: 0 auto;">
+      <input type="email" id="userEmail" placeholder="Введите ваш email" required 
+             style="padding: 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 18px; background: #fff; color: #000;">
+      <button type="submit" class="right" style="margin-top: 10px;">Отправить</button>
+    </form>
+    <div id="emailStatus" style="margin-top: 20px; text-align: center; color: #fff;"></div>
+  `;
+  container.appendChild(emailForm);
+  
+  const form = document.getElementById('emailForm');
+  const emailInput = document.getElementById('userEmail');
+  const statusDiv = document.getElementById('emailStatus');
+  
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = emailInput.value.trim();
+    
+    if (!email || !/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(email)) {
+      statusDiv.textContent = 'Пожалуйста, введите корректный email';
+      statusDiv.style.color = '#ff6b6b';
+      return;
+    }
+    
+    statusDiv.textContent = 'Отправка...';
+    statusDiv.style.color = '#fff';
+    emailInput.disabled = true;
+    form.querySelector('button').disabled = true;
+    
+    try {
+      // Получаем ответы из localStorage
+      const quizAnswers = JSON.parse(localStorage.getItem('quiz_answers') || '{}');
+      const finalAnswers = JSON.parse(localStorage.getItem('final_answers') || '{}');
+      
+      const response = await fetch(`${API_BASE}/submit_final_email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          email: email,
+          quiz_answers: quizAnswers,
+          final_answers: finalAnswers
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.status === 'success') {
+        // Отправляем пиксели VK и Яндекс Метрики при успешной отправке валидного уникального email
+        // VK пиксель (Top.Mail.Ru)
+        if (window._tmr && Array.isArray(window._tmr) && window.hashSHA256) {
+          try {
+            const hashedEmail = await window.hashSHA256(email);
+            if (hashedEmail) {
+              const pid = hashedEmail;
+              window._tmr.push({
+                type: 'reachGoal',
+                id: window.TOP_MAIL_RU_ID || 3718551,
+                goal: 'email_submitted',
+                pid: pid
+              });
+              console.log("VK pixel event sent: email_submitted", { goal: 'email_submitted', hashedEmail: hashedEmail.substring(0, 16) + '...' });
+            }
+          } catch (e) {
+            console.error('VK pixel error:', e);
+          }
+        }
+        
+        // Яндекс Метрика
+        if (window.ym && typeof window.ym === 'function') {
+          try {
+            const metricsGoal = 'email_submitted'; // Фиксируем именно отправку email
+            const metrikaId = window.YANDEX_METRIKA_ID || '105007364';
+            window.ym(metrikaId, 'reachGoal', metricsGoal);
+            console.log("Yandex Metrika goal reached: email_submitted", { goal: metricsGoal, id: metrikaId });
+          } catch (e) {
+            console.error('Yandex Metrika error:', e);
+          }
+        }
+        
+        statusDiv.textContent = '✅ Спасибо! Проверьте вашу почту — мы отправили ссылку на первый проект.';
+        statusDiv.style.color = '#21c063';
+        emailForm.style.display = 'none';
+        
+        // Показываем кнопку перехода в бота
+        const botButton = document.createElement('div');
+        botButton.style.marginTop = '30px';
+        botButton.style.textAlign = 'center';
+        botButton.innerHTML = `
+          <a href="https://t.me/AiM_Pay_Bot?start=me" class="right" style="text-decoration: none; display: inline-block;">
+            Перейти в Telegram-бота 💌
+          </a>
+        `;
+        container.appendChild(botButton);
+      } else {
+        statusDiv.textContent = data.message || 'Ошибка отправки. Попробуйте позже.';
+        statusDiv.style.color = '#ff6b6b';
+        emailInput.disabled = false;
+        form.querySelector('button').disabled = false;
+      }
+    } catch (error) {
+      console.error('Error submitting email:', error);
+      statusDiv.textContent = 'Ошибка соединения. Проверьте интернет и попробуйте снова.';
+      statusDiv.style.color = '#ff6b6b';
+      emailInput.disabled = false;
+      form.querySelector('button').disabled = false;
+    }
+  });
+}
 
 
