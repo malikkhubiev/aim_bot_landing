@@ -250,11 +250,11 @@ function showEmailForm(container) {
   emailForm.className = 'verdict';
   emailForm.style.marginTop = '40px';
   emailForm.innerHTML = `
-    <h3 style="text-align: center; margin-bottom: 20px;">Напиши свой email и построишь первый проект совершенно бесплатно</h3>
+    <h3 style="text-align: center; margin-bottom: 20px;">💖Ты набрал достаточно баллов💖<br>Тебя ждёт твой<br>🔥#1 ML-Проект для портфолио СОВЕРШЕННО БЕСПЛАТНО!🔥</h3>
     <form id="emailForm" style="display: flex; flex-direction: column; gap: 15px; max-width: 500px; margin: 0 auto;">
-      <input type="email" id="userEmail" placeholder="Введите ваш email" required 
+      <input type="email" id="userEmail" placeholder="Введи свой email" required 
              style="padding: 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 18px; background: #fff; color: #000;">
-      <button type="submit" class="right" style="margin-top: 10px;">Отправить</button>
+      <button type="submit" class="right" style="margin-top: 10px;">🎁Получить🎁</button>
     </form>
     <div id="emailStatus" style="margin-top: 20px; text-align: center; color: #fff;"></div>
   `;
