@@ -1,52 +1,67 @@
 <!doctype html>
 <html lang="ru">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Первый проект — Машинное обучение</title>
+  <title>Машинное Обучение: Прогноз Цены Премиумных Автомобилей + DEPLOY на Сервер 🧠</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    * { box-sizing: border-box; text-align: center; }
-    html, body {
-      margin: 0; 
-      padding: 0; 
-      background: #fbfbfd; 
-      color: #1d1d1f; 
+    * {
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      color: #1d1d1f;
       font-family: 'Widock', system-ui, -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
+
     .logo {
-      width: 150px; 
-      margin: 20px auto; 
+      width: 150px;
+      margin: 20px auto;
       display: block;
       transition: opacity 0.3s ease;
     }
-    .logo:hover { opacity: 0.8; }
-    .container { 
-      max-width: 1200px; 
-      margin: 0 auto; 
-      padding: 20px; 
+
+    .logo:hover {
+      opacity: 0.8;
     }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
     h1 {
-      font-size: 42px; 
-      color: #1d1d1f; 
+      font-size: 42px;
+      color: #1d1d1f;
       margin: 30px 0;
       font-weight: 600;
       letter-spacing: -0.5px;
     }
+
     h2 {
-      font-size: 28px; 
-      color: #1d1d1f; 
+      font-size: 28px;
+      color: #1d1d1f;
       margin: 20px 0;
       font-weight: 600;
     }
+
     p {
-      font-size: 20px; 
-      line-height: 1.6; 
-      color: #1d1d1f; 
+      font-size: 20px;
+      line-height: 1.6;
+      color: #1d1d1f;
       margin: 15px 0;
     }
+
     .video-container {
       position: relative;
       width: 100%;
@@ -59,10 +74,12 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
     .video-container:hover {
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
       transform: translateY(-4px);
     }
+
     .video-container iframe {
       position: absolute;
       top: 0;
@@ -71,6 +88,7 @@
       height: 100%;
       border: none;
     }
+
     .button-link {
       display: inline-block;
       background: #0071e3;
@@ -86,6 +104,7 @@
       position: relative;
       overflow: hidden;
     }
+
     .button-link::before {
       content: '';
       position: absolute;
@@ -98,27 +117,33 @@
       transform: translate(-50%, -50%);
       transition: width 0.6s, height 0.6s;
     }
+
     .button-link:hover::before {
       width: 500px;
       height: 500px;
     }
+
     .button-link:hover {
       background: #0077ed;
       transform: translateY(-2px);
       box-shadow: 0 4px 16px rgba(0, 113, 227, 0.3);
     }
+
     .button-link:active {
       transform: translateY(0);
       box-shadow: 0 2px 8px rgba(0, 113, 227, 0.2);
     }
+
     .telegram-link {
       background: #0071e3;
       font-size: 24px;
       padding: 20px 40px;
     }
+
     .telegram-link:hover {
       background: #0077ed;
     }
+
     .content-section {
       background: #ffffff;
       border: 1px solid #e5e5e7;
@@ -131,59 +156,140 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
     .content-section:hover {
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
       transform: translateY(-2px);
     }
+
     .error-message {
-      color: #ff3b30;
+      color: #21c063;
       font-size: 18px;
       margin: 20px 0;
     }
+
     @media (max-width: 768px) {
-      h1 { font-size: 32px; }
-      h2 { font-size: 24px; }
-      .container { padding: 16px; }
-      .content-section { padding: 24px; }
-      .button-link { 
-        font-size: 18px; 
-        padding: 14px 24px; 
+      h1 {
+        font-size: 32px;
+      }
+
+      h2 {
+        font-size: 24px;
+      }
+
+      .container {
+        padding: 16px;
+      }
+
+      .content-section {
+        padding: 24px;
+      }
+
+      .button-link {
+        font-size: 18px;
+        padding: 14px 24px;
         margin: 20px 5px;
         display: block;
         width: calc(100% - 10px);
       }
-      .video-container { margin: 20px auto; }
+
+      .video-container {
+        margin: 20px auto;
+      }
+    }
+
+    .columna {
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    /* Пульсирующий FOMO эффект */
+    .fomo-pulse {
+      animation: fomoPulse 2s infinite;
+    }
+
+    @keyframes fomoPulse {
+      0% {
+        box-shadow: 0 0 0 0 #21c063;
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 0 15px rgba(0, 113, 227, 0);
+        transform: scale(1.02);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(0, 113, 227, 0);
+        transform: scale(1);
+      }
+    }
+
+    .fomo-section {
+      animation: fomoSectionPulse 3s infinite;
+      position: relative;
+    }
+
+    .color_green{
+      background-color: #21c063;
+    }
+
+    .color_green:hover{
+      background-color: #21c063;
+    }
+
+    @keyframes fomoSectionPulse {
+      0% {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 0 0 0 #21c063;
+      }
+      50% {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 0 0 10px rgba(255, 59, 48, 0);
+      }
+      100% {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 0 0 0 rgba(255, 59, 48, 0);
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <img src="logo.svg" class="logo" alt="AiM Course">
-    <h1>Первый проект — Машинное обучение</h1>
-    
+    <h1>Твой #1 ML-проект в портфолио!<br>Прогноз Цены Премиумных Автомобилей<br>+ DEPLOY на Сервер 🧠</h1>
+
+    <a href="https://drive.google.com/drive/folders/1m2Aqehf3-EFIv5V4lBh7XJ76Nd6wdT9q?usp=sharing" class="button-link"
+      target="_blank">
+      🎁 Исходный код и данные
+    </a>
+
     <div id="content">
       <div class="video-container">
-        <iframe id="rutubeVideo" src="https://rutube.ru/play/embed/f96a05276de46302a6771c12cf098742/?p=wJUjnNklopbzLdvUlc1vow" style="border: none;" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+        <iframe id="rutubeVideo"
+          src="https://rutube.ru/play/embed/f96a05276de46302a6771c12cf098742/?p=wJUjnNklopbzLdvUlc1vow"
+          style="border: none;" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen
+          allowFullScreen></iframe>
         </iframe>
       </div>
-      
-      <div class="content-section">
-        <a href="https://drive.google.com/drive/folders/1m2Aqehf3-EFIv5V4lBh7XJ76Nd6wdT9q?usp=sharing" 
-           class="button-link" 
-           target="_blank">
-          🎁 Исходный код и данные
-        </a>
-      </div>
-      
-      <div class="content-section">
-        <h2>Что дальше?</h2>
-        <p>Теперь ты можешь перейти в Telegram-бота, чтобы продолжить бесплатное обучение и получить доступ к 150+ видео-урокам!</p>
-        <a href="https://t.me/AiM_Pay_Bot?start=me" class="button-link telegram-link" target="_blank">
-          💌 Ссылка на Telegram-бота
+
+      <div class="content-section columna fomo-section">
+        <h2 class="fomo-text" style="font-size: 26px; font-weight: bold;">✅Теперь ты готов!✅</h2>
+        <p>Переходи в AiM-Telegram-Бота<br>для начала обучения<br><b>ЗАБЕРИ 150+ уроков СОВЕРШЕННО БЕСПЛАТНО<br>Скоро доступ закроется!</b></p>
+        <a href="https://t.me/AiM_Pay_Bot?start=me" class="button-link telegram-link fomo-pulse color_green" target="_blank">
+          Забрать
         </a>
       </div>
     </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
   </div>
 </body>
-</html>
 
+</html>
