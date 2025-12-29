@@ -97,6 +97,10 @@ function renderStep(container, stepIndex, onDone) {
     btn.textContent = 'Перейти к чек-листу Уолл-стрит 🐺';
     btn.style.marginTop = '20px';
     btn.addEventListener('click', async () => {
+      // Track navigation to longrid
+      if (window.AimTracking) {
+        window.AimTracking.trackAction('navigate', { from: 'quest', to: 'longrid' });
+      }
       window.location.href = 'longrid.html';
     });
     
@@ -139,6 +143,10 @@ function renderStep(container, stepIndex, onDone) {
       next.disabled = false;
       // фиксируем клик по кнопке ответа для шагов 1-6
       sendProgress(stepIndex + 1, '✅');
+      // Track progress
+      if (window.AimTracking) {
+        window.AimTracking.trackProgress('quiz', String(stepIndex + 1), stepIndex, '✅');
+      }
     });
     body.appendChild(q);
     body.appendChild(reveal);
@@ -169,6 +177,10 @@ function renderStep(container, stepIndex, onDone) {
         else if  (indProgress == 8) sendProgress("8: Готов изучать", opt)
         else if  (indProgress == 9) sendProgress("9: Умеете пользоватья TG", opt)
         else if  (indProgress == 10) sendProgress("10: Готов купить", opt)
+        // Track progress
+        if (window.AimTracking) {
+          window.AimTracking.trackProgress('quiz', String(indProgress), stepIndex, opt);
+        }
       });
       btns.appendChild(b);
     });

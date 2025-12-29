@@ -223,6 +223,7 @@
             answer: key,
             meta: { correct: !!(chosen && chosen.correct) }
           });
+          // Track progress is already done in saveProgress
         });
       });
     }
@@ -260,6 +261,7 @@
 
     // Persist view event
     await window.AimQuestState.saveProgress({ stage:'longrid', stepKey: cards[currentIndex].id+':view', stepIndex: currentIndex, answer:null, meta:null });
+    // Track progress is already done in saveProgress
 
     function renderCompletionScreen(){
       const host = document.getElementById('cardHost');
@@ -291,17 +293,23 @@
         console.log(`[longrid.js] Moving to card ${currentIndex + 1}/${total}: ${cards[currentIndex].title}`);
         renderCard({ card: cards[currentIndex], leadName: lead.name || '', index: currentIndex, total, cardsWithExtra });
         await window.AimQuestState.saveProgress({ stage:'longrid', stepKey: cards[currentIndex].id+':view', stepIndex: currentIndex, answer:null, meta:null });
+        // Track progress is already done in saveProgress
       } else {
         // Check if we're on completion screen or last card
         const host = document.getElementById('cardHost');
         if (host.querySelector('.card h2') && host.querySelector('.card h2').textContent.includes('Поздравляем')) {
           // Already showing completion screen, navigate to final
           await window.AimQuestState.saveProgress({ stage:'longrid', stepKey:'completed', stepIndex: currentIndex, answer:'done', meta:null });
+          // Track navigation to final
+          if (window.AimTracking) {
+            window.AimTracking.trackAction('navigate', { from: 'longrid', to: 'final' });
+          }
           const url = window.AimQuestState.buildUrl('final.html', {});
           window.location.href = url;
         } else {
           // Show completion screen
           await window.AimQuestState.saveProgress({ stage:'longrid', stepKey:'completed', stepIndex: currentIndex, answer:'done', meta:null });
+          // Track progress is already done in saveProgress
           renderCompletionScreen();
         }
       }

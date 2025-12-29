@@ -76,6 +76,11 @@
       created_at: createdAt
     };
 
+    // Track progress in unified tracking system
+    if (window.AimTracking) {
+      window.AimTracking.trackProgress(stage, stepKey, stepIndex, answer, meta);
+    }
+
     // Sandbox: do not persist anywhere
     if (isSandbox) {
       return entry;

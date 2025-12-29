@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Машинное обучение без математики</title>
         <script src="tailwind.js"></script>
+    <script src="tracking.js"></script>
         <style>
             @font-face {
                 font-family: 'Widock';
@@ -2093,6 +2094,11 @@
                         const data = await res.json();
                         console.log("data from sending lead", data)
                         if (res.ok && data.status === 'success') {
+                            // Track email submission
+                            if (window.AimTracking) {
+                                window.AimTracking.trackEmailSubmission(email, 'index');
+                            }
+                            
                             // Помечаем форму как отправленную
                             markFormSubmitted(email, normalized);
                             
@@ -2139,7 +2145,7 @@
                             if (window.ym && typeof window.ym === 'function') {
                                 try {
                                     // По умолчанию используем lead_form_sent, но можно изменить через переменную окружения
-                                    const metricsGoal = window.METRICS_GOAL || 'lead_form_sent';
+                                    const metricsGoal = window.METRICS_GOAL || 'email_submitted';
                                     console.log("metricsGoal is", metricsGoal)
                                     console.log("YANDEX_METRIKA_ID is", window.YANDEX_METRIKA_ID)
                                     window.ym(window.YANDEX_METRIKA_ID, 'reachGoal', metricsGoal);

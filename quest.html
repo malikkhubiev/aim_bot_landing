@@ -195,10 +195,15 @@
   <main class="container">
     <section id="quiz"></section>
   </main>
+  <script src="tracking.js"></script>
   <script src="state.js"></script>
   <script src="app.js"></script>
   <script>
     // Упрощенная версия - не загружаем данные лида
+    // Track stage entry
+    if (window.AimTracking) {
+      window.AimTracking.trackStageEntry('quiz', 'start', 0);
+    }
   </script>
 </body>
 </html>

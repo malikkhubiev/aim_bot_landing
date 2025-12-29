@@ -176,8 +176,15 @@
       .btn { font-size: 20px; padding: 14px 20px; }
     }
   </style>
+  <script src="tracking.js"></script>
   <script src="state.js"></script>
   <script src="longrid.js" defer></script>
+  <script>
+    // Track stage entry
+    if (window.AimTracking) {
+      window.AimTracking.trackStageEntry('longrid', 'start', 0);
+    }
+  </script>
   </head>
 <body>
   <div class="container">

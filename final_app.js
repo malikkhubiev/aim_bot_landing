@@ -208,6 +208,10 @@ function renderStep(container, stepIndex, answers, onDone) {
         next.disabled = false;
         // Отправляем ответ сразу
         sendProgress(`final_q${stepIndex + 1}`, opt);
+        // Track progress
+        if (window.AimTracking) {
+          window.AimTracking.trackProgress('final', `final_q${stepIndex + 1}`, stepIndex, opt.answer);
+        }
       });
       div.appendChild(b)
       div.appendChild(p)
@@ -297,6 +301,11 @@ function showEmailForm(container) {
       const data = await response.json();
       
       if (data.status === 'success') {
+        // Track email submission
+        if (window.AimTracking) {
+          window.AimTracking.trackEmailSubmission(email, 'final');
+        }
+        
         // Отправляем пиксели VK и Яндекс Метрики при успешной отправке валидного уникального email
         // VK пиксель (Top.Mail.Ru)
         if (window._tmr && Array.isArray(window._tmr) && window.hashSHA256) {
@@ -320,7 +329,7 @@ function showEmailForm(container) {
         // Яндекс Метрика
         if (window.ym && typeof window.ym === 'function') {
           try {
-            const metricsGoal = 'email_submitted'; // Фиксируем именно отправку email
+            const metricsGoal = window.METRICS_GOAL || 'email_submitted'; // Фиксируем именно отправку email
             const metrikaId = window.YANDEX_METRIKA_ID || '105007364';
             window.ym(metrikaId, 'reachGoal', metricsGoal);
             console.log("Yandex Metrika goal reached: email_submitted", { goal: metricsGoal, id: metrikaId });

@@ -310,13 +310,18 @@
     <section id="quiz"></section>
     <br><br><br><br><br><br><br><br><br><br>
   </div>
+  <script src="tracking.js"></script>
   <script src="state.js"></script>
   <script src="final_app.js"></script>
   <script>
+    // Track stage entry
+    if (window.AimTracking) {
+      window.AimTracking.trackStageEntry('final', 'start', 0);
+    }
     // Инициализация пикселей для отслеживания отправки email
     (function(){
       // Яндекс Метрика - устанавливаем ID если его нет
-      window.YANDEX_METRIKA_ID = window.YANDEX_METRIKA_ID || '105007364';
+      window.YANDEX_METRIKA_ID = window.YANDEX_METRIKA_ID || '485026270';
       
       // Top.Mail.Ru (VK пиксель) - инициализируем если его нет
       if (!window._tmr) {
